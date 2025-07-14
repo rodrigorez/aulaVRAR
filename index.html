@@ -4,24 +4,47 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>VR Environment Generator</title>
-    <!-- A-Frame (versão mais recente) -->
+    <!-- A-Frame -->
     <script src="https://aframe.io/releases/1.7.0/aframe.min.js "></script>
-    <!-- Componente de Ambiente do A-Frame -->
-    <script src="https://unpkg.com/aframe-environment-component@1.5.x/dist/aframe-environment-component.min.js"></script>
+    <!-- Componente de Ambiente -->
+    <script src="https://unpkg.com/aframe-environment-component @1.5.x/dist/aframe-environment-component.min.js"></script>
   </head>
   <body>
     <a-scene>
-
+      <!-- Assets -->
       <a-assets>
-  <img id="img1" src="assets/02.png" crossorigin="anonymous">
-</a-assets>
+        <img id="img1" src="assets/01.jpg" crossorigin="anonymous">
+        <img id="img2" src="assets/02.png" crossorigin="anonymous">
+      </a-assets>
 
-      <a-camera position="0 1.6 0">
+      <!-- Câmera com ID -->
+      <a-camera
+        id="camera"
+        position="0 1.6 0"
+      >
         <a-cursor color="red" fuse="true" fuse-timeout="500"></a-cursor>
       </a-camera>
 
-      <a-image src="#img1" position="0 1.6 -3" height="1" width="1"></a-image>
+      <!-- Imagem 3D com efeito "look-at" condicional -->
+      <a-image
+        id="myImage1"
+        src="#img1"
+        position="-2 1.6 -3"
+        height="1"
+        width="1"
+      ></a-image>
 
+      <!-- Imagem 3D com efeito "look-at" ativado -->
+      <a-image
+        id="myImage2"
+        src="#img2"
+        position="2 1.6 -3"
+        height="1"
+        width="1"
+        look-at-camera
+      ></a-image>
+
+      <!-- Ambiente VR -->
       <a-entity
         environment="
           active: true;
@@ -48,5 +71,16 @@
         "
       ></a-entity>
     </a-scene>
+
+    <!-- Script para ativar "look-at" dinamicamente -->
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        const imagesWithLookAt = document.querySelectorAll('a-image[look-at-camera]');
+
+        imagesWithLookAt.forEach(image => {
+          image.setAttribute('look-at', '#camera'); // Usa o ID da câmera
+        });
+      });
+    </script>
   </body>
 </html>
