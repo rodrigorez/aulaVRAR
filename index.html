@@ -11,73 +11,12 @@
   </head>
   <body>
     <a-scene>
-      <!-- Assets com caminho correto -->
+      <!-- Assets -->
       <a-assets>
         <img id="img1" src="assets/01.jpg" crossorigin="anonymous">
         <img id="img2" src="assets/02.png" crossorigin="anonymous">
       </a-assets>
 
-      <!-- Câmera com ID -->
-      <a-camera id="camera" position="0 1.6 0">
-        <a-cursor color="red" fuse="true" fuse-timeout="500"></a-cursor>
-      </a-camera>
-
-      <!-- Imagens com efeito "look-at" condicional -->
-      <a-image
-        src="#img1"
-        position="-2 1.6 -3"
-        height="1"
-        width="1"
-      ></a-image>
-
-      <a-image
-        src="#img2"
-        position="2 1.6 -3"
-        height="1"
-        width="1"
-        look-at-camera
-      ></a-image>
-
-      <!-- Ambiente VR com parâmetros corretos -->
-      <a-entity
-        environment="
-          active: true;
-          preset: default;
-          seed: 1;
-          skyType: atmosphere;
-          lighting: distant;
-          shadow: false;
-          shadowSize: 10;
-          lightPosition: 0 1 -0.2;
-          fog: 0;
-          flatShading: false;
-          playArea: 1;
-          stageSize: 200;
-
- groundTexture: checkerboard; <!-- ADICIONADO -->
-
-          dressing: none;
-          dressingAmount: 10;
-          dressingColor: #795449;
-          dressingScale: 5;
-          dressingVariance: 1 1 1;
-          dressingUniformScale: true;
-          grid: none;
-          gridColor: #ccc
-        "
-      ></a-entity>
-    </a-scene>
-
-    <!-- Script com evento aframe-ready -->
-    <script>
-      document.addEventListener('DOMContentLoaded', () => {
-        document.querySelector('a-scene').addEventListener('loaded', () => {
-          const imagesWithLookAt = document.querySelectorAll('a-image[look-at-camera]');
-          imagesWithLookAt.forEach(image => {
-            image.setAttribute('look-at', '#camera');
-          });
-        });
-      });
-    </script>
-  </body>
-</html>
+      <!-- Câmera SEM ID -->
+      <a-camera position="0 1.6 0">
+        <a-cursor color="red
