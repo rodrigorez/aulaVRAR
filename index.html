@@ -6,7 +6,7 @@
     <title>VR Environment Generator</title>
     <!-- A-Frame -->
     <script src="https://aframe.io/releases/1.7.0/aframe.min.js"></script>
-  <script src="https://unpkg.com/aframe-environment-component@1.3.x/dist/aframe-environment-component.min.js"></script>
+    <script src="https://unpkg.com/aframe-environment-component@1.3.x/dist/aframe-environment-component.min.js"></script>
 </head>
 
   </head>
@@ -21,7 +21,7 @@
 
       <!-- Câmera -->
       <a-camera position="0 1.6 0">
-        <a-cursor color="red" fuse="true" fuse-timeout="500"></a-cursor>
+        <a-cursor color="red"</a-cursor>
       </a-camera>
 
       <!-- Imagens sem efeito "look-at" -->
@@ -39,12 +39,7 @@
         width="1"
       ></a-image>
 
-      <a-video
-        src="#video1"
-        height="1"
-        width="1"
-        position="3 1.6 -3"
-      ></a-video>
+      <a-video src="#video1" position="3 1.6 -3" width="1" height="1" ></a-video>
 
       <a-entity
         environment="
