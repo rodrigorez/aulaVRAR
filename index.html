@@ -11,8 +11,12 @@
     <a-scene>
       <!-- Assets com vídeo configurado -->
       <a-assets>
-        <video
-          id="penguin-sledding"
+        <img id="img1"
+          src="assets/01.jpg">
+        <img id="img2"
+          src="assets/02.png">
+
+        <video id="penguin-sledding"
           autoplay
           loop="true"
           src="assets/02.mp4"
@@ -27,16 +31,63 @@
         <a-cursor color="red"></a-cursor>
       </a-camera>
 
+      <!-- Imagens -->
+      <a-image
+        src="#img1"
+        position="-2 1.6 -3"
+        height="1"
+        width="1"
+      ></a-image>
+
+      <a-image
+        src="#img2"
+        position="1 1.6 -3"
+        height="1"
+        width="1"
+      ></a-image>
+
       <!-- Vídeo 3D -->
       <a-video
         src="#penguin-sledding"
-        width="16"
-        height="9"
+        width="1.6"
+        height="0.9"
         position="0 1.6 -2"
       ></a-video>
 
       <!-- Ambiente -->
-      <a-entity environment="preset: default; groundColor: #445; grid: cross"></a-entity>
+      <a-entity
+        environment="
+          active: true;
+          dressing: none;
+          dressingAmount: 10;
+          dressingColor: #795449;
+          dressingOnPlayArea: 0;
+          dressingScale: 5;
+          dressingUniformScale: true;
+          dressingVariance: 1 1 1;
+          flatShading: false;
+          fog: 0;
+          grid: none;
+          gridColor: #ccc;
+          ground: hills;
+          groundColor: #454545;
+          groundColor2: #5d5d5d;
+          groundDensity: 64;
+          groundFrequency: 10;
+          groundTexture: checkerboard;
+          groundYScale: 3;
+          horizonColor: #ddd;
+          lightPosition: 0 1 -0.2;
+          lighting: distant;
+          playArea: 1;
+          preset: default;
+          seed: 1;
+          shadow: false;
+          shadowSize: 10;
+          skyColor: #88c;
+          skyType: atmosphere;
+          stageSize: 200"
+      ></a-entity>
     </a-scene>
 
     <!-- Script para iniciar o vídeo com interação -->
@@ -44,7 +95,7 @@
       document.addEventListener('DOMContentLoaded', () => {
         const video = document.querySelector('#penguin-sledding');
         const playButton = document.createElement('button');
-        
+
         playButton.textContent = 'Clique para Iniciar Vídeo';
         playButton.style.position = 'absolute';
         playButton.style.top = '10px';
