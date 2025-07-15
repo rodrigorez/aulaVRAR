@@ -1,24 +1,71 @@
 <!DOCTYPE html>
-<html lang="en" dir="ltr">
+<html lang="en">
   <head>
     <meta charset="utf-8">
-    <title>teste</title>
-    <script src="https://aframe.io/releases/1.7.0/aframe.min.js"></script>
+    <title>Teste Vídeo</title>
+    <meta name="apple-mobile-web-app-capable" content="yes"> <!-- Requerido para iOS -->
+    <script src="https://aframe.io/releases/1.7.0/aframe.min.js "></script>
     <script src="https://unpkg.com/aframe-environment-component@1.3.x/dist/aframe-environment-component.min.js"></script>
   </head>
   <body>
     <a-scene>
+      <!-- Assets com vídeo configurado -->
       <a-assets>
-        <video id="penguin-sledding" autoplay loop="true" src="assets/02.mp4"></video>
+        <video
+          id="penguin-sledding"
+          autoplay
+          loop="true"
+          src="assets/02.mp4"
+          playsinline
+          webkit-playsinline
+          muted
+        ></video>
       </a-assets>
 
+      <!-- Câmera -->
       <a-camera position="0 1.6 0">
         <a-cursor color="red"></a-cursor>
       </a-camera>
 
-      <!-- Using the asset management system. -->
-      <a-video src="#penguin-sledding" width="16" height="9" position="0 1.6 -2"></a-video>
+      <!-- Vídeo 3D -->
+      <a-video
+        src="#penguin-sledding"
+        width="16"
+        height="9"
+        position="0 1.6 -2"
+      ></a-video>
+
+      <!-- Ambiente -->
       <a-entity environment="preset: default; groundColor: #445; grid: cross"></a-entity>
     </a-scene>
+
+    <!-- Script para iniciar o vídeo com interação -->
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        const video = document.querySelector('#penguin-sledding');
+        const playButton = document.createElement('button');
+        
+        playButton.textContent = 'Clique para Iniciar Vídeo';
+        playButton.style.position = 'absolute';
+        playButton.style.top = '10px';
+        playButton.style.left = '10px';
+        playButton.style.zIndex = '1000';
+        playButton.style.padding = '10px 20px';
+        playButton.style.backgroundColor = '#fff';
+        playButton.style.color = '#000';
+        document.body.appendChild(playButton);
+
+        playButton.addEventListener('click', () => {
+          video.play()
+            .then(() => {
+              console.log('Vídeo iniciado!');
+              playButton.style.display = 'none';
+            })
+            .catch(err => {
+              console.error('Erro ao iniciar vídeo:', err);
+            });
+        });
+      });
+    </script>
   </body>
 </html>
