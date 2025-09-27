@@ -10,48 +10,74 @@
 </head>
 <body>
   <a-scene embedded arjs="sourceType: webcam;" cursor="rayOrigin: mouse">
-    <!-- O conteúdo abaixo será gerado dinamicamente com base em galeria.csv -->
-    <!-- Exemplo de um marcador gerado -->
-    <!--
-    <a-marker type="hiro" id="marker-1">
-      <a-entity
-        gltf-model="https://paulohscwb.github.io/polyhedra/johnson3/models/J63.glb"
-        scale="1.0 1.0 1.0"
-        animation="property: rotation; to: 0 360 0; loop: true; dur: 5000; easing: linear"
-      ></a-entity>
-    </a-marker>
-    -->
-    <!-- Marcadores gerados dinamicamente -->
+    <!-- Container para os marcadores gerados dinamicamente -->
     <a-entity id="markers-container"></a-entity>
-
     <a-entity camera></a-entity>
   </a-scene>
 
   <script>
     // === PAINEL DE CONTROLE (SUBSTITUÍDO PELO generate.js) ===
-    // Este bloco será substituído pelo conteúdo real do CSV quando o arquivo for gerado.
     const MARCADORES = [
-      // Esta parte será substituída pelo conteúdo do CSV convertido em JS
-      // Exemplo:
-      // { idMarcador: '1', tipoMarcador: 'hiro', modelo3D: 'https://...', escalaModelo: '1.0', animacaoRotacao: 'true', velocidadeRotacao: '1.0', corTema: '#87CEEB', urlMundo: '../mundos/mundo1_galeria1.html' },
-      // { idMarcador: '2', tipoMarcador: 'kanji', modelo3D: 'https://...', ... }
-    ];
+  {
+    "idGaleria": "1",
+    "idMarcador": "1",
+    "tipoMarcador": "hiro",
+    "nomeMarcador": "Mundo J63",
+    "modelo3D": "./models/01.glb",
+    "escalaModelo": "1.0",
+    "animacaoRotacao": "true",
+    "velocidadeRotacao": "1.0",
+    "corTema": "#87CEEB",
+    "urlMundo": "./mundos/mundo1_galeria1.html"
+  },
+  {
+    "idGaleria": "1",
+    "idMarcador": "2",
+    "tipoMarcador": "kanji",
+    "nomeMarcador": "Mundo J84",
+    "modelo3D": "./models/02.glb",
+    "escalaModelo": "0.8",
+    "animacaoRotacao": "true",
+    "velocidadeRotacao": "0.5",
+    "corTema": "#4B0082",
+    "urlMundo": "./mundos/mundo2_galeria1.html"
+  },
+  {
+    "idGaleria": "1",
+    "idMarcador": "3",
+    "tipoMarcador": "barcode-5",
+    "nomeMarcador": "Mundo J92",
+    "modelo3D": "./models/03.glb",
+    "escalaModelo": "1.2",
+    "animacaoRotacao": "false",
+    "velocidadeRotacao": "0",
+    "corTema": "#FF6B6B",
+    "urlMundo": "./mundos/mundo3_galeria1.html"
+  }
+];
     // === FIM DO PAINEL DE CONTROLE ===
 
     document.addEventListener('DOMContentLoaded', () => {
       const container = document.querySelector('#markers-container');
 
+      if (typeof MARCADORES === 'undefined' || !Array.isArray(MARCADORES)) {
+          console.error("❌ Erro: Array MARCADORES não encontrado ou inválido no template.");
+          return;
+      }
+
       MARCADORES.forEach(m => {
         const markerEl = document.createElement('a-marker');
-        markerEl.setAttribute('type', m.tipoMarcador); // ou 'preset' se for hiro/kanji
-        // Se for preset:
+        // Define o tipo de marcador
         if (['hiro', 'kanji'].includes(m.tipoMarcador)) {
             markerEl.setAttribute('preset', m.tipoMarcador);
+        } else if (m.tipoMarcador.startsWith('barcode-')) {
+            const value = m.tipoMarcador.split('-')[1];
+            markerEl.setAttribute('type', 'barcode');
+            markerEl.setAttribute('value', value);
         } else {
-            // Para barcode ou custom, você pode precisar de mais configurações
-            markerEl.setAttribute('type', m.tipoMarcador);
-            // Por exemplo, para barcode: markerEl.setAttribute('value', 'X'); // onde X é o número
-            // Para custom: markerEl.setAttribute('url', 'caminho_para_seu_arquivo.patt');
+            // Para marcadores customizados, você pode precisar de 'url'
+            // markerEl.setAttribute('url', m.tipoMarcador); // Ex: 'path/to/pattern-marker.patt'
+            console.warn(`⚠️ Tipo de marcador desconhecido: ${m.tipoMarcador}`);
         }
 
         const entityEl = document.createElement('a-entity');
@@ -59,13 +85,13 @@
         entityEl.setAttribute('scale', `${m.escalaModelo} ${m.escalaModelo} ${m.escalaModelo}`);
 
         if (m.animacaoRotacao === 'true') {
-            const duracao = 5000 / (parseFloat(m.velocidadeRotacao) || 1.0);
-            entityEl.setAttribute('animation', `property: rotation; to: 0 360 0; loop: true; dur: ${duracao}; easing: linear`);
+          const duracao = 5000 / (parseFloat(m.velocidadeRotacao) || 1.0);
+          entityEl.setAttribute('animation', `property: rotation; to: 0 360 0; loop: true; dur: ${duracao}; easing: linear`);
         }
 
         // Adiciona clique para ir para o mundo
         entityEl.addEventListener('click', () => {
-            window.location.href = m.urlMundo;
+          window.location.href = m.urlMundo;
         });
 
         markerEl.appendChild(entityEl);
