@@ -1,1 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>Galeria {{idGaleria}} - {{nomeGaleria}}</title>
+  <script src="https://aframe.io/releases/1.7.0/aframe.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/gh/AR-js-org/AR.js@3.4.0/aframe/build/aframe-ar-nft.js"></script>
+  <style> body { margin: 0; overflow: hidden; } </style>
+</head>
+<body>
+  <a-scene embedded arjs="sourceType: webcam;" cursor="rayOrigin: mouse">
+    <!-- O conteúdo abaixo será gerado dinamicamente com base em galeria.csv -->
+    <!-- Exemplo de um marcador gerado -->
+    <!--
+    <a-marker type="hiro" id="marker-1">
+      <a-entity
+        gltf-model="https://paulohscwb.github.io/polyhedra/johnson3/models/J63.glb"
+        scale="1.0 1.0 1.0"
+        animation="property: rotation; to: 0 360 0; loop: true; dur: 5000; easing: linear"
+      ></a-entity>
+    </a-marker>
+    -->
+    <!-- Marcadores gerados dinamicamente -->
+    <a-entity id="markers-container"></a-entity>
 
+    <a-entity camera></a-entity>
+  </a-scene>
+
+  <script>
+    // === PAINEL DE CONTROLE (SUBSTITUÍDO PELO generate.js) ===
+    // Este bloco será substituído pelo conteúdo real do CSV quando o arquivo for gerado.
+    const MARCADORES = [
+      // Esta parte será substituída pelo conteúdo do CSV convertido em JS
+      // Exemplo:
+      // { idMarcador: '1', tipoMarcador: 'hiro', modelo3D: 'https://...', escalaModelo: '1.0', animacaoRotacao: 'true', velocidadeRotacao: '1.0', corTema: '#87CEEB', urlMundo: '../mundos/mundo1_galeria1.html' },
+      // { idMarcador: '2', tipoMarcador: 'kanji', modelo3D: 'https://...', ... }
+    ];
+    // === FIM DO PAINEL DE CONTROLE ===
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const container = document.querySelector('#markers-container');
+
+      MARCADORES.forEach(m => {
+        const markerEl = document.createElement('a-marker');
+        markerEl.setAttribute('type', m.tipoMarcador); // ou 'preset' se for hiro/kanji
+        // Se for preset:
+        if (['hiro', 'kanji'].includes(m.tipoMarcador)) {
+            markerEl.setAttribute('preset', m.tipoMarcador);
+        } else {
+            // Para barcode ou custom, você pode precisar de mais configurações
+            markerEl.setAttribute('type', m.tipoMarcador);
+            // Por exemplo, para barcode: markerEl.setAttribute('value', 'X'); // onde X é o número
+            // Para custom: markerEl.setAttribute('url', 'caminho_para_seu_arquivo.patt');
+        }
+
+        const entityEl = document.createElement('a-entity');
+        entityEl.setAttribute('gltf-model', m.modelo3D);
+        entityEl.setAttribute('scale', `${m.escalaModelo} ${m.escalaModelo} ${m.escalaModelo}`);
+
+        if (m.animacaoRotacao === 'true') {
+            const duracao = 5000 / (parseFloat(m.velocidadeRotacao) || 1.0);
+            entityEl.setAttribute('animation', `property: rotation; to: 0 360 0; loop: true; dur: ${duracao}; easing: linear`);
+        }
+
+        // Adiciona clique para ir para o mundo
+        entityEl.addEventListener('click', () => {
+            window.location.href = m.urlMundo;
+        });
+
+        markerEl.appendChild(entityEl);
+        container.appendChild(markerEl);
+      });
+    });
+  </script>
+</body>
+</html>
