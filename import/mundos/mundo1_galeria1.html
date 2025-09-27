@@ -5,14 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
   <title>Mundo J63 - Zonas 11</title>
   <script src="https://aframe.io/releases/1.7.0/aframe.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/gh/AR-js-org/AR.js@3.4.0/aframe/build/aframe-ar-nft.js"></script>
   <style> body { margin: 0; overflow: hidden; } </style>
 </head>
 <body>
-  <a-scene
-    background="color: #87CEEB"
-    cursor="rayOrigin: mouse"
-    vr-mode-ui="enabled: true"
-  >
+  <a-scene embedded arjs="sourceType: webcam;" cursor="rayOrigin: mouse">
     <!-- CÉU COM SHADER (se existir) -->
     
     <a-sky shader="src: url(shaders/ceu-nuvens.glsl);"></a-sky>
@@ -47,8 +44,12 @@
       init: function () {
         const el = this.el;
         const url = this.data.url;
+
         el.addEventListener('click', () => {
-          window.location.href = url;
+          el.setAttribute('scale', '1.2 1.2 1.2');
+          setTimeout(() => {
+            window.location.href = url;
+          }, 300);
         });
       }
     });
