@@ -5,12 +5,30 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
   <title>Mundo J84 - Zonas 11</title>
   <script src="https://aframe.io/releases/1.7.0/aframe.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/gh/AR-js-org/AR.js@3.4.0/aframe/build/aframe-ar-nft.js"></script>
-  <style> body { margin: 0; overflow: hidden; } </style>
+  <style>
+    body { margin: 0; overflow: hidden; font-family: Arial, sans-serif; }
+    #ui {
+      position: fixed;
+      bottom: 20px;
+      width: 100%;
+      text-align: center;
+      color: white;
+      background: rgba(0,0,0,0.5);
+      padding: 10px;
+      z-index: 999;
+      pointer-events: none;
+    }
+  </style>
 </head>
 <body>
-  <a-scene embedded arjs="sourceType: webcam;" cursor="rayOrigin: mouse">
-    <!-- CÉU COM SHADER (se existir) -->
+  <div id="ui">🌐 Clique no modelo 3D para ver a obra — ou na esfera para voltar à AR!</div>
+
+  <a-scene
+    background="color: #4B0082"
+    cursor="rayOrigin: mouse"
+    vr-mode-ui="enabled: true"
+  >
+    <!-- 🌐 CÉU 360° (com shader ou cor) -->
     
     <a-sky shader="src: url(shaders/ceu-estrelas.glsl);"></a-sky>
     
@@ -18,25 +36,30 @@
     <a-sky color="#4B0082"></a-sky>
     {{/shaderCeu}}
 
-    <!-- MODELO DE FUNDO (se existir) -->
+    <!-- 🖼️ MODELO DE FUNDO (se existir) -->
     
     <a-entity gltf-model="models/ceu-estrelas.glb" position="0 0 -10" scale="5 5 5"></a-entity>
     
 
-    <!-- BOTÃO VOLTAR -->
-    <a-plane
-      position="0 0.2 -2"
-      width="1"
-      height="0.3"
-      color="{{corBotao}}"
-      text="value: ↩️ Voltar à Galeria; align: center; color: white;"
+    <!-- 🔴 Esfera para voltar à AR -->
+    <a-sphere
       class="clickable-back"
-      onclick="window.location.href='https://rodrigorez.github.io/aulaVRAR/import/galerias/galeria1.html'"
-    ></a-plane>
+      position="-2 1.5 -3"
+      radius="0.4"
+      color="{{corBotao}}"
+      animation="property: position; to: -2 1.7 -3; dur: 1000; easing: easeInOutQuad; loop: true; dir: alternate"
+    >
+      <a-entity
+        position="0 0.6 0"
+        text="value: ↩️\nVOLTAR AR; align: center; color: white; width: 3"
+        scale="1.2 1.2 1.2"
+      ></a-entity>
+    </a-sphere>
 
-    <!-- OBRAS (serão injetadas dinamicamente pelo gerador) -->
+    <!-- 🎨 OBRAS (serão injetadas dinamicamente pelo gerador) -->
     <a-entity id="obras-container"></a-entity>
 
+    <!-- 👁️ Câmera -->
     <a-entity camera look-controls wasd-controls position="0 1.6 0"></a-entity>
   </a-scene>
 
@@ -60,7 +83,7 @@
     document.addEventListener('DOMContentLoaded', () => {
       const obras = {[{"nomeObra":"Obra J84 - Disfenóide Snub","posicao":"2 1.5 -3","rotacao":"0 0 0","escala":"1.2 1.2 1.2","modeloObra":"./models/02.glb","urlObra":"https://rodrigorez.github.io/aulaVRAR/import/obras/obra3_mundo2.html"}]}; // Triple braces para evitar escaping
 
-      const container = document.getElementById('obras-container');
+      const container = document.querySelector('#obras-container');
       obras.forEach(obra => {
         const entity = document.createElement('a-entity');
         entity.setAttribute('gltf-model', obra.modeloObra);
