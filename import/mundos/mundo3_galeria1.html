@@ -3,22 +3,22 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Mundo J63 - Zonas 11</title>
+  <title>Mundo J92 - Zonas 11</title>
   <script src="https://aframe.io/releases/1.7.0/aframe.min.js"></script>
   <style> body { margin: 0; overflow: hidden; } </style>
 </head>
 <body>
   <a-scene
-    background="color: #87CEEB"
+    background="color: #FF6B6B"
     cursor="rayOrigin: mouse"
     vr-mode-ui="enabled: true"
   >
     <!-- CÉU COM SHADER (se existir) -->
     
-    <a-sky shader="src: url(shaders/ceu-nuvens.glsl);"></a-sky>
+    <a-sky shader="src: url(shaders/ceu-lava.glsl);"></a-sky>
     
     {{^shaderCeu}}
-    <a-sky color="#87CEEB"></a-sky>
+    <a-sky color="#FF6B6B"></a-sky>
     {{/shaderCeu}}
 
     <!-- MODELO DE FUNDO (se existir) -->
