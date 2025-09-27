@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html>
+<html lang="pt-BR">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-  <title>Mundo J92 - Zonas 11</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{tituloObra}} - {{nomeExposicao}}</title>
   <script src="https://aframe.io/releases/1.7.0/aframe.min.js"></script>
   <style>
     body { margin: 0; overflow: hidden; font-family: Arial, sans-serif; }
@@ -16,28 +16,18 @@
       background: rgba(0,0,0,0.5);
       padding: 10px;
       z-index: 999;
-      pointer-events: none;
     }
   </style>
 </head>
 <body>
-  <div id="ui">🌐 Clique no modelo 3D para ver a obra — ou na esfera para voltar à AR!</div>
+  <div id="ui">🌐 Clique na imagem para ver a obra — ou na esfera para voltar à AR!</div>
 
   <a-scene
-    background="color: #FF6B6B"
     cursor="rayOrigin: mouse"
     vr-mode-ui="enabled: true"
   >
-    <!-- 🌐 CÉU 360° (com shader ou cor) -->
-    
-    <a-sky shader="src: url(shaders/ceu-lava.glsl);"></a-sky>
-    
-    {{^shaderCeu}}
-    <a-sky color="#FF6B6B"></a-sky>
-    {{/shaderCeu}}
-
-    <!-- 🖼️ MODELO DE FUNDO (se existir) -->
-    
+    <!-- 🖼️ FUNDO 360° -->
+    <a-sky src="https://cdn.aframe.io/360-image-gallery-boilerplate/img/city.jpg"></a-sky>
 
     <!-- 🔴 Esfera para voltar à AR -->
     <a-sphere
@@ -54,8 +44,22 @@
       ></a-entity>
     </a-sphere>
 
-    <!-- 🎨 OBRAS (serão injetadas dinamicamente pelo gerador) -->
-    <a-entity id="obras-container"></a-entity>
+    <!-- 🖼️ IMAGEM 3D CLICÁVEL -->
+    <a-plane
+      class="clickable-image"
+      position="2 1.5 -3"
+      width="1.5"
+      height="1"
+      rotation="0 0 0"
+      animation="property: position; to: 2 1.7 -3; dur: 1200; easing: easeInOutQuad; loop: true; dir: alternate"
+      material="src: url({{iconeObra}}); side: double;"
+    ></a-plane>
+
+    <a-entity
+      position="2 0.8 -3"
+      text="value: 🎬\nAssista a obra; align: center; color: white; width: 3"
+      scale="1.2 1.2 1.2"
+    ></a-entity>
 
     <!-- 👁️ Câmera -->
     <a-entity camera look-controls wasd-controls position="0 1.6 0"></a-entity>
@@ -77,26 +81,20 @@
       }
     });
 
-    // Obras serão injetadas aqui pelo script de geração
     document.addEventListener('DOMContentLoaded', () => {
-      const obras = {[{"nomeObra":"Obra J92 - Hebesfenorotunda","posicao":"2 1.5 -3","rotacao":"0 0 0","escala":"1 1 1","modeloObra":"./models/03.glb","urlObra":"https://rodrigorez.github.io/aulaVRAR/import/obras/obra4_mundo3.html"}]}; // Triple braces para evitar escaping
+      const sphere = document.querySelector('.clickable-back');
+      if (sphere) {
+        sphere.setAttribute('redirect-on-click', {
+          url: 'https://rodrigorez.github.io/aulaVRAR/import/galerias/galeria1.html'
+        });
+      }
 
-      const container = document.querySelector('#obras-container');
-      obras.forEach(obra => {
-        const entity = document.createElement('a-entity');
-        entity.setAttribute('gltf-model', obra.modeloObra);
-        entity.setAttribute('position', obra.posicao);
-        entity.setAttribute('rotation', obra.rotacao);
-        entity.setAttribute('scale', obra.escala);
-        entity.setAttribute('class', 'clickable-obra');
-        entity.setAttribute('redirect-on-click', { url: obra.urlObra });
-        container.appendChild(entity);
-      });
-
-      // Botão voltar
-      document.querySelector('.clickable-back').addEventListener('click', () => {
-        window.location.href = 'https://rodrigorez.github.io/aulaVRAR/import/galerias/galeria1.html';
-      });
+      const image = document.querySelector('.clickable-image');
+      if (image) {
+        image.setAttribute('redirect-on-click', {
+          url: '{{videoUrl}}'
+        });
+      }
     });
   </script>
 </body>
