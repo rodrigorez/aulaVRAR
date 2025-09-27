@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
   <title>Mundo J63 - Zonas 11</title>
   <script src="https://aframe.io/releases/1.7.0/aframe.min.js"></script>
   <style> body { margin: 0; overflow: hidden; } </style>
@@ -32,6 +32,7 @@
       color="{{corBotao}}"
       text="value: ↩️ Voltar à Galeria; align: center; color: white;"
       class="clickable-back"
+      onclick="window.location.href='https://rodrigorez.github.io/aulaVRAR/import/galerias/galeria1.html'"
     ></a-plane>
 
     <!-- OBRAS (serão injetadas dinamicamente pelo gerador) -->
@@ -54,34 +55,23 @@
 
     // Obras serão injetadas aqui pelo script de geração
     document.addEventListener('DOMContentLoaded', () => {
-      const obras = [
-        {{#obras}}
-        {
-          nome: "{{nomeObra}}",
-          posicao: "{{posicao}}",
-          rotacao: "{{rotacao}}",
-          escala: "{{escala}}",
-          modelo: "{{modeloObra}}",
-          url: "{{urlObra}}"
-        },
-        {{/obras}}
-      ];
+      const obras = {[{"nomeObra":"Obra J63 - Icosaedro Tridiminuído","posicao":"2 1.5 -3","rotacao":"0 0 0","escala":"1 1 1","modeloObra":"./models/01.glb","urlObra":"https://rodrigorez.github.io/aulaVRAR/import/obras/obra1_mundo1.html"},{"nomeObra":"Obra J63b - Detalhe","posicao":"-2 1.5 -3","rotacao":"0 45 0","escala":"0.8 0.8 0.8","modeloObra":"./models/01.glb","urlObra":"https://rodrigorez.github.io/aulaVRAR/import/obras/obra2_mundo1.html"}]}; // Triple braces para evitar escaping
 
       const container = document.getElementById('obras-container');
       obras.forEach(obra => {
         const entity = document.createElement('a-entity');
-        entity.setAttribute('gltf-model', obra.modelo);
+        entity.setAttribute('gltf-model', obra.modeloObra);
         entity.setAttribute('position', obra.posicao);
         entity.setAttribute('rotation', obra.rotacao);
         entity.setAttribute('scale', obra.escala);
         entity.setAttribute('class', 'clickable-obra');
-        entity.setAttribute('redirect-on-click', { url: obra.url });
+        entity.setAttribute('redirect-on-click', { url: obra.urlObra });
         container.appendChild(entity);
       });
 
       // Botão voltar
       document.querySelector('.clickable-back').addEventListener('click', () => {
-        window.location.href = "../galerias/galeria1.html";
+        window.location.href = 'https://rodrigorez.github.io/aulaVRAR/import/galerias/galeria1.html';
       });
     });
   </script>
