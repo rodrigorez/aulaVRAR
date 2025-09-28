@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-  <title>{{nomeGaleria}} - Zonas 11</title>
+  <title>Mundo J84 - Zonas 11</title>
   <script src="https://aframe.io/releases/1.7.0/aframe.min.js"></script>
   <script src="https://cdn.jsdelivr.net/gh/AR-js-org/AR.js@3.4.0/aframe/build/aframe-ar-nft.js"></script>
   <style>
@@ -25,8 +25,7 @@
   <div id="ui">🌐 Clique na imagem para ver a obra — ou na esfera para voltar à AR!</div>
 
   <a-scene
-    embedded
-    arjs="sourceType: webcam;"
+    background="color: #4B0082"
     cursor="rayOrigin: mouse"
     vr-mode-ui="enabled: true"
   >
@@ -37,6 +36,11 @@
     {{^shaderCeu}}
     <a-sky color="#4B0082"></a-sky>
     {{/shaderCeu}}
+
+    <!-- 🖼️ MODELO DE FUNDO (se existir) -->
+    
+    <a-entity gltf-model="models/ceu-estrelas.glb" position="0 0 -10" scale="5 5 5"></a-entity>
+    
 
     <!-- 🔴 Esfera para voltar à AR -->
     <a-sphere
@@ -53,7 +57,7 @@
       ></a-entity>
     </a-sphere>
 
-    <!-- 🖼️ IMAGENS DAS OBRAS -->
+    <!-- 🎨 OBRAS (serão injetadas dinamicamente pelo gerador) -->
     <a-entity id="obras-container"></a-entity>
 
     <a-entity camera look-controls wasd-controls position="0 1.6 0"></a-entity>
@@ -79,57 +83,43 @@
       const container = document.querySelector('#obras-container');
 
       // === PAINEL DE CONTROLE (SUBSTITUÍDO PELO generate.js) ===
-      {{MARKERS_JS}}
+      const OBRAS = {[{"nomeObra":"Obra J84 - Disfenóide Snub","posicao":"2 1.5 -3","rotacao":"0 0 0","escala":"1.2 1.2 1.2","modeloObra":"./models/02.glb","iconeObra":"assets/images/obra-j84.jpg","urlObra":"https://rodrigorez.github.io/aulaVRAR/import/obras/obra3_mundo2.html"}]}; // Triple braces para evitar escaping
       // === FIM DO PAINEL DE CONTROLE ===
 
-      if (typeof MARCADORES === 'undefined' || !Array.isArray(MARCADORES)) {
-          console.error("❌ Erro: Array MARCADORES não encontrado ou inválido no template.");
+      if (typeof OBRAS === 'undefined' || !Array.isArray(OBRAS)) {
+          console.error("❌ Erro: Array OBRAS não encontrado ou inválido no template.");
           return;
       }
 
-      MARCADORES.forEach(m => {
-        const markerEl = document.createElement('a-marker');
-        // Define o tipo de marcador
-        if (['hiro', 'kanji'].includes(m.tipoMarcador)) {
-            markerEl.setAttribute('preset', m.tipoMarcador);
-        } else if (m.tipoMarcador.startsWith('barcode-')) {
-            const value = m.tipoMarcador.split('-')[1];
-            markerEl.setAttribute('type', 'barcode');
-            markerEl.setAttribute('value', value);
-        } else {
-            // Para marcadores customizados, você pode precisar de 'url'
-            // markerEl.setAttribute('url', m.tipoMarcador); // Ex: 'path/to/pattern-marker.patt'
-            console.warn(`⚠️ Tipo de marcador desconhecido: ${m.tipoMarcador}`);
-        }
-
+      OBRAS.forEach(obra => {
         // ✅ Cria um plano para a imagem da obra
         const planeEl = document.createElement('a-plane');
-        planeEl.setAttribute('src', m.iconeObra); // ✅ Carrega a imagem da obra
-        planeEl.setAttribute('position', '0 0.5 -1');
+        planeEl.setAttribute('src', obra.iconeObra); // ✅ Carrega a imagem da obra
+        planeEl.setAttribute('position', obra.posicao);
+        planeEl.setAttribute('rotation', obra.rotacao);
         planeEl.setAttribute('width', '1.5');
         planeEl.setAttribute('height', '1');
         planeEl.setAttribute('class', 'clickable-obra');
-        planeEl.setAttribute('redirect-on-click', { url: m.urlMundo }); // ✅ Redireciona para o mundo correto
+        planeEl.setAttribute('redirect-on-click', { url: obra.urlObra }); // ✅ Redireciona para a página da obra
 
         // Adiciona animação de flutuação (opcional)
-        planeEl.setAttribute('animation', `property: position; to: 0 0.7 -1; dur: 1200; easing: easeInOutQuad; loop: true; dir: alternate`);
+        planeEl.setAttribute('animation', `property: position; to: ${obra.posicao.split(' ')[0]} ${parseFloat(obra.posicao.split(' ')[1]) + 0.2} ${obra.posicao.split(' ')[2]}; dur: 1200; easing: easeInOutQuad; loop: true; dir: alternate`);
 
-        // Adiciona texto abaixo da imagem
+        // ✅ Adiciona texto abaixo da imagem
         const textEl = document.createElement('a-entity');
-        textEl.setAttribute('position', '0 -0.3 -1');
-        textEl.setAttribute('text', `value: 🎬\n${m.nomeMarcador}; align: center; color: white; width: 3`);
+        textEl.setAttribute('position', `${obra.posicao.split(' ')[0]} ${parseFloat(obra.posicao.split(' ')[1]) - 0.8} ${obra.posicao.split(' ')[2]}`);
+        textEl.setAttribute('text', `value: 🎬\n${obra.nomeObra}; align: center; color: white; width: 3`);
         textEl.setAttribute('scale', '1.2 1.2 1.2');
 
-        // Agrupa o plano e o texto
+        // ✅ Agrupa o plano e o texto
         const groupEl = document.createElement('a-entity');
         groupEl.appendChild(planeEl);
         groupEl.appendChild(textEl);
 
-        markerEl.appendChild(groupEl);
-        container.appendChild(markerEl);
+        container.appendChild(groupEl);
       });
 
-      // Botão voltar
+      // ✅ Botão voltar
       document.querySelector('.clickable-back').addEventListener('click', () => {
         window.location.href = 'https://rodrigorez.github.io/aulaVRAR/import/galerias/galeria1.html';
       });
