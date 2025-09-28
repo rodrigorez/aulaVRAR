@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
   <title>Mundo J63 - Zonas 11</title>
   <script src="https://aframe.io/releases/1.7.0/aframe.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/gh/AR-js-org/AR.js@3.4.0/aframe/build/aframe-ar-nft.js"></script>
   <style>
     body { margin: 0; overflow: hidden; font-family: Arial, sans-serif; }
     #ui {
@@ -25,27 +24,18 @@
   <div id="ui">🌐 Clique na imagem para ver a obra — ou na esfera para voltar à AR!</div>
 
   <a-scene
-    background="color: #87CEEB"
     cursor="rayOrigin: mouse"
     vr-mode-ui="enabled: true"
   >
-    <!-- 🌐 CÉU COM SHADER (se existir) -->
-    
-    <a-sky shader="src: url(shaders/ceu-nuvens.glsl);"></a-sky>
-    
-    {{^shaderCeu}}
-    <a-sky color="#87CEEB"></a-sky>
-    {{/shaderCeu}}
-
-    <!-- 🖼️ MODELO DE FUNDO (se existir) -->
-    
+    <!-- 🖼️ FUNDO 360° -->
+    <a-sky src="https://cdn.aframe.io/360-image-gallery-boilerplate/img/city.jpg"></a-sky>
 
     <!-- 🔴 Esfera para voltar à AR -->
     <a-sphere
       class="clickable-back"
       position="-2 1.5 -3"
       radius="0.4"
-      color="{{corBotao}}"
+      color="#FF5252"
       animation="property: position; to: -2 1.7 -3; dur: 1000; easing: easeInOutQuad; loop: true; dir: alternate"
     >
       <a-entity
@@ -55,9 +45,24 @@
       ></a-entity>
     </a-sphere>
 
-    <!-- 🎨 OBRAS (serão injetadas dinamicamente pelo gerador) -->
-    <a-entity id="obras-container"></a-entity>
+    <!-- 🖼️ IMAGEM 3D CLICÁVEL -->
+    <a-plane
+      class="clickable-image"
+      position="2 1.5 -3"
+      width="1.5"
+      height="1"
+      rotation="0 0 0"
+      animation="property: position; to: 2 1.7 -3; dur: 1200; easing: easeInOutQuad; loop: true; dir: alternate"
+      material="src: url(assets/images/obra-j63.png); side: double;"
+    ></a-plane>
 
+    <a-entity
+      position="2 0.8 -3"
+      text="value: 🎬\nAssista a obra; align: center; color: white; width: 3"
+      scale="1.2 1.2 1.2"
+    ></a-entity>
+
+    <!-- 👁️ Câmera -->
     <a-entity camera look-controls wasd-controls position="0 1.6 0"></a-entity>
   </a-scene>
 
@@ -78,49 +83,19 @@
     });
 
     document.addEventListener('DOMContentLoaded', () => {
-      const container = document.querySelector('#obras-container');
-
-      // === PAINEL DE CONTROLE (SUBSTITUÍDO PELO generate.js) ===
-      const OBRAS = {[{"nomeObra":"Obra J63 - Icosaedro Tridiminuído","posicao":"2 1.5 -3","rotacao":"0 0 0","escala":"1 1 1","modeloObra":"./models/01.glb","iconeObra":"assets/images/obra-j63.jpg","urlObra":"https://rodrigorez.github.io/aulaVRAR/import/obras/obra1_mundo1.html"},{"nomeObra":"Obra J63b - Detalhe","posicao":"-2 1.5 -3","rotacao":"0 45 0","escala":"0.8 0.8 0.8","modeloObra":"./models/01.glb","iconeObra":"assets/images/obra-j63b.jpg","urlObra":"https://rodrigorez.github.io/aulaVRAR/import/obras/obra2_mundo1.html"}]}; // Triple braces para evitar escaping
-      // === FIM DO PAINEL DE CONTROLE ===
-
-      if (typeof OBRAS === 'undefined' || !Array.isArray(OBRAS)) {
-          console.error("❌ Erro: Array OBRAS não encontrado ou inválido no template.");
-          return;
+      const sphere = document.querySelector('.clickable-back');
+      if (sphere) {
+        sphere.setAttribute('redirect-on-click', {
+          url: 'https://rodrigorez.github.io/aulaVRAR/import/galerias/galeria1.html'
+        });
       }
 
-      OBRAS.forEach(obra => {
-        // ✅ Cria um plano para a imagem da obra
-        const planeEl = document.createElement('a-plane');
-        planeEl.setAttribute('src', obra.iconeObra); // ✅ Carrega a imagem da obra
-        planeEl.setAttribute('position', obra.posicao);
-        planeEl.setAttribute('rotation', obra.rotacao);
-        planeEl.setAttribute('width', '1.5');
-        planeEl.setAttribute('height', '1');
-        planeEl.setAttribute('class', 'clickable-obra');
-        planeEl.setAttribute('redirect-on-click', { url: obra.urlObra }); // ✅ Redireciona para a página da obra
-
-        // Adiciona animação de flutuação (opcional)
-        planeEl.setAttribute('animation', `property: position; to: ${obra.posicao.split(' ')[0]} ${parseFloat(obra.posicao.split(' ')[1]) + 0.2} ${obra.posicao.split(' ')[2]}; dur: 1200; easing: easeInOutQuad; loop: true; dir: alternate`);
-
-        // ✅ Adiciona texto abaixo da imagem
-        const textEl = document.createElement('a-entity');
-        textEl.setAttribute('position', `${obra.posicao.split(' ')[0]} ${parseFloat(obra.posicao.split(' ')[1]) - 0.8} ${obra.posicao.split(' ')[2]}`);
-        textEl.setAttribute('text', `value: 🎬\n${obra.nomeObra}; align: center; color: white; width: 3`);
-        textEl.setAttribute('scale', '1.2 1.2 1.2');
-
-        // ✅ Agrupa o plano e o texto
-        const groupEl = document.createElement('a-entity');
-        groupEl.appendChild(planeEl);
-        groupEl.appendChild(textEl);
-
-        container.appendChild(groupEl);
-      });
-
-      // ✅ Botão voltar
-      document.querySelector('.clickable-back').addEventListener('click', () => {
-        window.location.href = 'https://rodrigorez.github.io/aulaVRAR/import/galerias/galeria1.html';
-      });
+      const image = document.querySelector('.clickable-image');
+      if (image) {
+        image.setAttribute('redirect-on-click', {
+          url: '#'
+        });
+      }
     });
   </script>
 </body>
