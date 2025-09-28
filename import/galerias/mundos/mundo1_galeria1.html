@@ -2,8 +2,8 @@
 <html lang="pt-BR">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Mundo J63 - Zonas 11</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>{{nomeGaleria}} - Zonas 11</title>
   <script src="https://aframe.io/releases/1.7.0/aframe.min.js"></script>
   <script src="https://cdn.jsdelivr.net/gh/AR-js-org/AR.js@3.4.0/aframe/build/aframe-ar-nft.js"></script>
   <style>
@@ -79,43 +79,57 @@
       const container = document.querySelector('#obras-container');
 
       // === PAINEL DE CONTROLE (SUBSTITUÍDO PELO generate.js) ===
-      const OBRAS = {[{"nomeObra":"Obra J63 - Icosaedro Tridiminuído","posicao":"2 1.5 -3","rotacao":"0 0 0","escala":"1 1 1","modeloObra":"./models/01.glb","urlObra":"https://rodrigorez.github.io/aulaVRAR/import/obras/obra1_mundo1.html"},{"nomeObra":"Obra J63b - Detalhe","posicao":"-2 1.5 -3","rotacao":"0 45 0","escala":"0.8 0.8 0.8","modeloObra":"./models/01.glb","urlObra":"https://rodrigorez.github.io/aulaVRAR/import/obras/obra2_mundo1.html"}]}; // Triple braces para evitar escaping
+      {{MARKERS_JS}}
       // === FIM DO PAINEL DE CONTROLE ===
 
-      if (typeof OBRAS === 'undefined' || !Array.isArray(OBRAS)) {
-          console.error("❌ Erro: Array OBRAS não encontrado ou inválido no template.");
+      if (typeof MARCADORES === 'undefined' || !Array.isArray(MARCADORES)) {
+          console.error("❌ Erro: Array MARCADORES não encontrado ou inválido no template.");
           return;
       }
 
-      OBRAS.forEach(obra => {
+      MARCADORES.forEach(m => {
+        const markerEl = document.createElement('a-marker');
+        // Define o tipo de marcador
+        if (['hiro', 'kanji'].includes(m.tipoMarcador)) {
+            markerEl.setAttribute('preset', m.tipoMarcador);
+        } else if (m.tipoMarcador.startsWith('barcode-')) {
+            const value = m.tipoMarcador.split('-')[1];
+            markerEl.setAttribute('type', 'barcode');
+            markerEl.setAttribute('value', value);
+        } else {
+            // Para marcadores customizados, você pode precisar de 'url'
+            // markerEl.setAttribute('url', m.tipoMarcador); // Ex: 'path/to/pattern-marker.patt'
+            console.warn(`⚠️ Tipo de marcador desconhecido: ${m.tipoMarcador}`);
+        }
+
         // ✅ Cria um plano para a imagem da obra
         const planeEl = document.createElement('a-plane');
-        planeEl.setAttribute('src', obra.iconeObra); // ✅ Carrega a imagem da obra
-        planeEl.setAttribute('position', obra.posicao);
-        planeEl.setAttribute('rotation', obra.rotacao);
+        planeEl.setAttribute('src', m.iconeObra); // ✅ Carrega a imagem da obra
+        planeEl.setAttribute('position', '0 0.5 -1');
         planeEl.setAttribute('width', '1.5');
         planeEl.setAttribute('height', '1');
         planeEl.setAttribute('class', 'clickable-obra');
-        planeEl.setAttribute('redirect-on-click', { url: obra.urlObra }); // ✅ Redireciona para a página da obra
+        planeEl.setAttribute('redirect-on-click', { url: m.urlMundo }); // ✅ Redireciona para o mundo correto
 
         // Adiciona animação de flutuação (opcional)
-        planeEl.setAttribute('animation', `property: position; to: ${obra.posicao.split(' ')[0]} ${parseFloat(obra.posicao.split(' ')[1]) + 0.2} ${obra.posicao.split(' ')[2]}; dur: 1200; easing: easeInOutQuad; loop: true; dir: alternate`);
+        planeEl.setAttribute('animation', `property: position; to: 0 0.7 -1; dur: 1200; easing: easeInOutQuad; loop: true; dir: alternate`);
 
-        // ✅ Adiciona texto abaixo da imagem
+        // Adiciona texto abaixo da imagem
         const textEl = document.createElement('a-entity');
-        textEl.setAttribute('position', `${obra.posicao.split(' ')[0]} ${parseFloat(obra.posicao.split(' ')[1]) - 0.8} ${obra.posicao.split(' ')[2]}`);
-        textEl.setAttribute('text', `value: 🎬\n${obra.nomeObra}; align: center; color: white; width: 3`);
+        textEl.setAttribute('position', '0 -0.3 -1');
+        textEl.setAttribute('text', `value: 🎬\n${m.nomeMarcador}; align: center; color: white; width: 3`);
         textEl.setAttribute('scale', '1.2 1.2 1.2');
 
-        // ✅ Agrupa o plano e o texto
+        // Agrupa o plano e o texto
         const groupEl = document.createElement('a-entity');
         groupEl.appendChild(planeEl);
         groupEl.appendChild(textEl);
 
-        container.appendChild(groupEl);
+        markerEl.appendChild(groupEl);
+        container.appendChild(markerEl);
       });
 
-      // ✅ Botão voltar
+      // Botão voltar
       document.querySelector('.clickable-back').addEventListener('click', () => {
         window.location.href = 'https://rodrigorez.github.io/aulaVRAR/import/galerias/galeria1.html';
       });
