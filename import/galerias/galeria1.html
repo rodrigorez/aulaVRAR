@@ -1,0 +1,1144 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>Galeria 1 - Zonas 11 Multi-Mundo [29/09/2025, 14:35:58]</title>
+  <script src="https://aframe.io/releases/1.7.0/aframe.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/gh/AR-js-org/AR.js@3.4.0/aframe/build/aframe-ar-nft.js"></script>
+  <style> 
+    body { 
+      margin: 0; 
+      overflow: hidden; 
+      font-family: Arial, sans-serif;
+      font-size: 16px;
+      background-color: #f5f5f5;
+    } 
+    
+    /* PAINEL DE CONTROLE DEBUG MULTI-MUNDO */
+    #debug-panel {
+      position: fixed;
+      top: 10px;
+      right: 10px;
+      background: linear-gradient(135deg, rgba(0,0,0,0.9) 0%, rgba(30,30,30,0.95) 100%);
+      color: white;
+      padding: 20px;
+      border-radius: 12px;
+      font-family: 'Segoe UI', Arial, sans-serif;
+      font-size: 13px;
+      z-index: 9999;
+      display: none;
+      min-width: 350px;
+      max-width: 450px;
+      max-height: calc(100vh - 20px);
+      overflow-y: auto;
+      overflow-x: hidden;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+    
+    #debug-panel.visible {
+      display: block;
+      animation: slideIn 0.3s ease-out;
+    }
+    
+    @keyframes slideIn {
+      from { transform: translateX(100%); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+    
+    #debug-panel h3 {
+      margin: 0 0 15px 0;
+      color: #FF6B6B;
+      font-size: 16px;
+      border-bottom: 2px solid #FF6B6B;
+      padding-bottom: 8px;
+    }
+    
+    .debug-section {
+      background: rgba(255,255,255,0.05);
+      border-radius: 8px;
+      padding: 12px;
+      margin-bottom: 12px;
+      border-left: 3px solid #4CAF50;
+    }
+    
+    .debug-section h4 {
+      margin: 0 0 8px 0;
+      color: #87CEEB;
+      font-size: 14px;
+    }
+    
+    #debug-panel label {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin: 10px 0 5px 0;
+      color: #E0E0E0;
+      font-weight: 500;
+    }
+    
+    #debug-panel input[type="range"] {
+      width: 100%;
+      margin: 8px 0;
+      height: 6px;
+      border-radius: 3px;
+      background: rgba(255,255,255,0.2);
+      outline: none;
+      cursor: pointer;
+    }
+    
+    #debug-panel input[type="range"]::-webkit-slider-thumb {
+      appearance: none;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: #4CAF50;
+      cursor: pointer;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+    }
+    
+    #debug-panel select {
+      width: 100%;
+      padding: 8px;
+      border-radius: 4px;
+      border: 1px solid rgba(255,255,255,0.3);
+      background: rgba(0,0,0,0.5);
+      color: white;
+      margin: 5px 0;
+    }
+    
+    #debug-panel button {
+      background: linear-gradient(45deg, #4CAF50, #45a049);
+      color: white;
+      border: none;
+      padding: 10px 15px;
+      border-radius: 6px;
+      cursor: pointer;
+      margin: 5px 5px 0 0;
+      font-weight: 600;
+      font-size: 12px;
+      transition: all 0.3s ease;
+      box-shadow: 0 2px 8px rgba(76, 175, 80, 0.3);
+    }
+    
+    #debug-panel button:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(76, 175, 80, 0.4);
+    }
+    
+    #debug-panel button.save-btn {
+      background: linear-gradient(45deg, #FF5722, #E64A19);
+      box-shadow: 0 2px 8px rgba(255, 87, 34, 0.3);
+    }
+    
+    #debug-panel .value-display {
+      color: #FFD700;
+      font-weight: bold;
+      background: rgba(255, 215, 0, 0.1);
+      padding: 2px 8px;
+      border-radius: 4px;
+      min-width: 50px;
+      text-align: center;
+    }
+    
+    /* BOTÃO TOGGLE DEBUG */
+    #debug-toggle-btn {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      width: 60px;
+      height: 60px;
+      background: linear-gradient(135deg, #FF5722 0%, #E64A19 100%);
+      border: none;
+      border-radius: 50%;
+      cursor: pointer;
+      z-index: 10001;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 24px;
+      font-weight: bold;
+      box-shadow: 0 4px 20px rgba(255, 87, 34, 0.4);
+      transition: all 0.3s ease;
+    }
+    
+    #debug-toggle-btn:hover {
+      transform: scale(1.1);
+      box-shadow: 0 6px 25px rgba(255, 87, 34, 0.6);
+    }
+    
+    /* STATUS INDICATOR */
+    .status-indicator {
+      position: fixed;
+      top: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #4CAF50;
+      color: white;
+      padding: 8px 20px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+      z-index: 10000;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+    
+    .status-indicator.show {
+      opacity: 1;
+    }
+    
+    .status-indicator.error {
+      background: #F44336;
+    }
+    
+    /* LOADING INDICATOR */
+    #loading-indicator {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, #2196F3 0%, #FF5722 100%);
+      color: white;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 99999;
+      font-family: 'Segoe UI', Arial, sans-serif;
+    }
+    
+    #loading-indicator.hidden {
+      display: none;
+    }
+    
+    .loading-spinner {
+      width: 60px;
+      height: 60px;
+      border: 4px solid rgba(255,255,255,0.3);
+      border-top: 4px solid white;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin-bottom: 20px;
+    }
+    
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    
+    .loading-text {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 10px;
+    }
+    
+    .loading-details {
+      font-size: 14px;
+      opacity: 0.8;
+      text-align: center;
+      max-width: 300px;
+    }
+  </style>
+</head>
+<body>
+  <!-- INDICADOR DE CARREGAMENTO -->
+  <div id="loading-indicator">
+    <div class="loading-spinner"></div>
+    <div class="loading-text">Carregando Zonas 11 Multi-Mundo</div>
+    <div class="loading-details">Configurando realidade aumentada...</div>
+  </div>
+  
+  <!-- BOTÃO FLUTUANTE PARA DEBUG -->
+  <button id="debug-toggle-btn" title="Ativar/Desativar Debug Panel">🔧</button>
+  
+  <!-- PAINEL DE DEBUG MULTI-MUNDO -->
+  <div id="debug-panel">
+    <h3>🔧 Configurador Multi-Mundo Zonas 11</h3>
+    
+    <!-- Seleção de Mundo -->
+    <div class="debug-section">
+      <h4>🌍 Mundo Selecionado para Edição</h4>
+      
+      <label>Mundo Ativo:</label>
+      <select id="world-selector">
+        <option value="">Selecione um mundo detectado...</option>
+      </select>
+      
+      <div id="world-info" style="margin-top: 8px; padding: 8px; background: rgba(0,255,0,0.1); border-radius: 4px; font-size: 11px; display: none;">
+        <div><strong>Mundo:</strong> <span id="world-name">-</span></div>
+        <div><strong>ID:</strong> <span id="world-id">-</span></div>
+        <div><strong>Escala Original:</strong> <span id="world-original-scale">-</span></div>
+      </div>
+    </div>
+    
+    <!-- Caixas de Colisão -->
+    <div class="debug-section">
+      <h4>📏 Caixas de Colisão 3D (padrão caixa_${idMundo})</h4>
+      
+      <div id="no-world-selected" style="padding: 10px; background: rgba(255,193,7,0.2); border-radius: 4px; color: #FFC107; font-size: 11px; text-align: center;">
+        🌍 Selecione um mundo detectado para editar suas dimensões
+      </div>
+      
+      <div id="world-controls" style="display: none;">
+        <label>Largura: <span id="width-value" class="value-display">1.0</span></label>
+        <input type="range" id="width-slider" min="0.5" max="5.0" step="0.1" value="1.0">
+        
+        <label>Altura: <span id="height-value" class="value-display">1.0</span></label>
+        <input type="range" id="height-slider" min="0.5" max="5.0" step="0.1" value="1.0">
+        
+        <label>Profundidade: <span id="depth-value" class="value-display">1.0</span></label>
+        <input type="range" id="depth-slider" min="0.5" max="5.0" step="0.1" value="1.0">
+        
+        <div style="margin-top: 10px; padding: 8px; background: rgba(76,175,80,0.1); border-radius: 4px; font-size: 11px;">
+          <strong>⚙️ Proporção Linear Ativa:</strong><br>
+          As caixas se ajustam automaticamente quando o modelo muda de escala
+        </div>
+        
+        <div style="margin-top: 8px; padding: 8px; background: rgba(33,150,243,0.1); border-radius: 4px; font-size: 11px;">
+          <strong>👆 Área Clicável:</strong><br>
+          Os cliques são detectados na caixa de colisão (não no modelo 3D)
+        </div>
+      </div>
+    </div>
+    
+    <!-- Configurações Globais -->
+    <div class="debug-section">
+      <h4>🌐 Configurações Globais</h4>
+      
+      <label>Distância Detecção: <span id="detection-value" class="value-display">2.0m</span></label>
+      <input type="range" id="detection-slider" min="1.0" max="10.0" step="0.5" value="2.0">
+      
+      <label>Escala Global: <span id="scale-value" class="value-display">1.0x</span></label>
+      <input type="range" id="scale-slider" min="0.1" max="3.0" step="0.1" value="1.0">
+    </div>
+    
+    <!-- Botões de Ação -->
+    <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 15px;">
+      <button id="apply-btn">✅ Aplicar</button>
+      <button id="save-btn" class="save-btn">💾 Salvar Multi-Mundo</button>
+      <button id="reset-btn">🔄 Resetar Mundo</button>
+    </div>
+    
+    <!-- Status -->
+    <div style="margin-top: 10px; padding-top: 10px; border-top: 1px solid rgba(255,255,255,0.1); font-size: 11px; color: #999;">
+      <div><strong>Ctrl+Shift+5:</strong> Toggle Debug</div>
+      <div><strong>ESC:</strong> Fechar Painel</div>
+      <div id="config-status" style="margin-top: 6px; color: #4CAF50;">✅ Sistema multi-mundo ativo</div>
+    </div>
+  </div>
+  
+  <!-- Status Indicator -->
+  <div id="status-indicator" class="status-indicator"></div>
+
+  <a-scene embedded arjs="sourceType: webcam;" cursor="rayOrigin: mouse">
+    <a-entity id="markers-container"></a-entity>
+    <a-entity camera></a-entity>
+  </a-scene>
+
+  <script>
+    // === CONFIGURAÇÕES DINÂMICAS ===
+    const CONFIG_UI = {
+      fontePadrao: 'Arial, sans-serif',
+      tamanhoFonte: '16px',
+      corFundo: '#f5f5f5',
+      corPrimaria: '#FF5722',
+      corSecundaria: '#2196F3',
+      debugModoDebug: 'true' === 'true',
+      debugLogsAtivos: 'true' === 'true'
+    };
+    
+    // === PAINEL DE CONTROLE ===
+    const MARCADORES = [
+  {
+    "idGaleria": "1",
+    "idMarcador": "1",
+    "tipoMarcador": "hiro",
+    "nomeMarcador": "Mundo J63",
+    "modelo3D": "../models/01.glb",
+    "escalaModelo": "1.0",
+    "animacaoRotacao": "true",
+    "velocidadeRotacao": "1.0",
+    "corTema": "#87CEEB",
+    "urlMundo": "../mundos/mundo1_galeria1.html"
+  },
+  {
+    "idGaleria": "1",
+    "idMarcador": "2",
+    "tipoMarcador": "kanji",
+    "nomeMarcador": "Mundo J84",
+    "modelo3D": "../models/02.glb",
+    "escalaModelo": "0.8",
+    "animacaoRotacao": "true",
+    "velocidadeRotacao": "0.5",
+    "corTema": "#4B0082",
+    "urlMundo": "../mundos/mundo2_galeria1.html"
+  },
+  {
+    "idGaleria": "1",
+    "idMarcador": "3",
+    "tipoMarcador": "barcode-5",
+    "nomeMarcador": "Mundo J92",
+    "modelo3D": "../models/03.glb",
+    "escalaModelo": "1.2",
+    "animacaoRotacao": "false",
+    "velocidadeRotacao": "0",
+    "corTema": "#FF6B6B",
+    "urlMundo": "../mundos/mundo3_galeria1.html"
+  }
+];
+
+// DEBUG: Sistema de logs para validação
+console.log('Sistema Zonas 11 carregado!');
+console.log('Total de marcadores:', MARCADORES.length);
+MARCADORES.forEach((m, i) => {
+  console.log('Marcador ' + (i + 1) + ':', {
+    tipo: m.tipoMarcador,
+    modelo: m.modelo3D,
+    mundo: m.urlMundo
+  });
+});
+
+// ✅ FUNÇÃO DE NAVEGAÇÃO LOCAL
+function navegarParaMundo(urlMundo) {
+  console.log('🌍 === INICIANDO NAVEGAÇÃO LOCAL ===');
+  console.log('📍 URL recebida:', urlMundo);
+  
+  // ✅ Sempre usa caminho relativo local
+  let urlLocal = urlMundo;
+  
+  // Se a URL contém domínio externo, extrai apenas o arquivo
+  if (urlMundo.includes('http')) {
+    const nomeArquivo = urlMundo.split('/').pop();
+    urlLocal = `../mundos/${nomeArquivo}`;
+    console.log('🔄 URL convertida para local:', urlLocal);
+  }
+  
+  console.log('🚀 Navegando para:', urlLocal);
+  
+  // Navegação local
+  window.location.href = urlLocal;
+}
+    
+    // === SISTEMA MULTI-MUNDO ===
+    let debugMode = false;
+    
+    // ✅ CONFIGURAÇÃO MULTI-MUNDO com padrão caixa_${idMundo}
+    let currentConfig = {
+      detectionDistance: 2.0,
+      globalScale: 1.0,
+      primaryColor: '#FF5722',
+      secondaryColor: '#2196F3',
+      mundos: {} // estrutura: mundos.mundo1.dimensoes, etc.
+    };
+    
+    // ✅ MUNDO ATUALMENTE SELECIONADO
+    let selectedWorldId = null;
+    
+    // ✅ MAPA DE MUNDOS DETECTADOS
+    let detectedWorlds = new Map();
+    
+    console.log('🌍 Sistema Multi-Mundo Zonas 11 iniciado');
+    
+    // === FUNÇÕES UTILITÁRIAS ===
+    function updateLoadingStatus(message) {
+      const loadingDetails = document.querySelector('.loading-details');
+      if (loadingDetails) {
+        loadingDetails.textContent = message;
+        console.log('📱 Status:', message);
+      }
+    }
+    
+    function showStatus(message, type = 'success') {
+      const indicator = document.getElementById('status-indicator');
+      indicator.textContent = message;
+      indicator.className = `status-indicator show ${type}`;
+      setTimeout(() => indicator.classList.remove('show'), 3000);
+    }
+    
+    // === CARREGAMENTO DE CONFIGURAÇÃO ===
+    async function loadConfigFromServerSync() {
+      try {
+        console.log('🔄 Carregando configuração multi-mundo...');
+        const response = await fetch('/api/config');
+        const result = await response.json();
+        
+        if (result.success) {
+          const serverConfig = result.config;
+          console.log('📦 Configuração recebida:', serverConfig);
+          
+          currentConfig.detectionDistance = serverConfig.configuracaoAR?.distanciaDeteccao || 2.0;
+          currentConfig.globalScale = serverConfig.globalScale || 1.0;
+          currentConfig.primaryColor = serverConfig.interface?.corPrimaria || '#FF5722';
+          currentConfig.secondaryColor = serverConfig.interface?.corSecundaria || '#2196F3';
+          
+          if (serverConfig.mundos) {
+            currentConfig.mundos = serverConfig.mundos;
+            console.log('🌍 Configurações por mundo carregadas:', currentConfig.mundos);
+          } else {
+            // Compatibilidade com estrutura antiga
+            console.log('⚠️ Convertendo estrutura antiga para multi-mundo...');
+            currentConfig.mundos = {
+              'mundo1': {
+                dimensoes: {
+                  largura: serverConfig.configuracaoAR?.tamanhoMarcadorLargura || 1.0,
+                  altura: serverConfig.configuracaoAR?.tamanhoMarcadorAltura || 1.0,
+                  profundidade: serverConfig.configuracaoAR?.tamanhoMarcadorProfundidade || 1.0
+                }
+              }
+            };
+          }
+          
+          console.log('✅ Configuração multi-mundo carregada:', currentConfig);
+          return true;
+        }
+        return false;
+      } catch (error) {
+        console.warn('⚠️ Erro ao carregar configuração:', error.message);
+        return false;
+      }
+    }
+    
+    // === DETECÇÃO DE MUNDOS ===
+    function detectWorldsInScene() {
+      console.log('🔍 === DETECTANDO MUNDOS NA CENA ===');
+      detectedWorlds.clear();
+      
+      const markers = document.querySelectorAll('[id^="marker-"]');
+      console.log(`🔍 Encontrados ${markers.length} marcadores`);
+      
+      markers.forEach((marker, index) => {
+        if (typeof MARCADORES !== 'undefined' && MARCADORES[index]) {
+          const marcadorData = MARCADORES[index];
+          const urlMundo = marcadorData.urlMundo;
+          
+          const match = urlMundo.match(/mundo(\d+)_galeria\d+\.html/);
+          if (match) {
+            const idMundo = match[1];
+            const nomeMundo = marcadorData.nomeMarcador;
+            const escalaOriginal = parseFloat(marcadorData.escalaModelo) || 1.0;
+            
+            const modelElement = marker.querySelector('[gltf-model]');
+            const clickAreaElement = marker.querySelector('.clickable');
+            
+            if (modelElement && clickAreaElement) {
+              // ✅ Aplica padrão caixa_${idMundo}
+              clickAreaElement.setAttribute('id', `caixa_${idMundo}`);
+              
+              detectedWorlds.set(idMundo, {
+                id: idMundo,
+                nome: nomeMundo,
+                element: marker,
+                modelElement: modelElement,
+                clickAreaElement: clickAreaElement,
+                originalScale: escalaOriginal,
+                configKey: `mundo${idMundo}`
+              });
+              
+              console.log(`✅ Mundo ${idMundo} detectado:`);
+              console.log(`   - Nome: ${nomeMundo}`);
+              console.log(`   - Escala Original: ${escalaOriginal}`);
+              console.log(`   - ID da Caixa: caixa_${idMundo}`);
+            }
+          }
+        }
+      });
+      
+      console.log(`✅ Total de mundos detectados: ${detectedWorlds.size}`);
+      updateWorldSelector();
+    }
+    
+    function updateWorldSelector() {
+      const selector = document.getElementById('world-selector');
+      if (!selector) return;
+      
+      while (selector.children.length > 1) {
+        selector.removeChild(selector.lastChild);
+      }
+      
+      detectedWorlds.forEach((worldData, idMundo) => {
+        const option = document.createElement('option');
+        option.value = idMundo;
+        option.textContent = `Mundo ${idMundo} - ${worldData.nome}`;
+        selector.appendChild(option);
+      });
+      
+      console.log(`📝 Seletor atualizado com ${detectedWorlds.size} mundos`);
+    }
+    
+    // === SELEÇÃO DE MUNDO ===
+    function selectWorldForEditing(idMundo) {
+      selectedWorldId = idMundo;
+      
+      const noWorldDiv = document.getElementById('no-world-selected');
+      const controlsDiv = document.getElementById('world-controls');
+      const worldInfoDiv = document.getElementById('world-info');
+      
+      if (!idMundo) {
+        noWorldDiv.style.display = 'block';
+        controlsDiv.style.display = 'none';
+        worldInfoDiv.style.display = 'none';
+        return;
+      }
+      
+      const worldData = detectedWorlds.get(idMundo);
+      if (!worldData) {
+        console.warn(`⚠️ Mundo ${idMundo} não encontrado`);
+        return;
+      }
+      
+      noWorldDiv.style.display = 'none';
+      controlsDiv.style.display = 'block';
+      worldInfoDiv.style.display = 'block';
+      
+      document.getElementById('world-name').textContent = worldData.nome;
+      document.getElementById('world-id').textContent = idMundo;
+      document.getElementById('world-original-scale').textContent = worldData.originalScale + 'x';
+      
+      loadWorldDimensions(idMundo);
+      console.log(`✅ Mundo ${idMundo} selecionado para edição`);
+    }
+    
+    function loadWorldDimensions(idMundo) {
+      const configKey = `mundo${idMundo}`;
+      
+      if (currentConfig.mundos[configKey] && currentConfig.mundos[configKey].dimensoes) {
+        const dims = currentConfig.mundos[configKey].dimensoes;
+        
+        document.getElementById('width-slider').value = dims.largura || 1.0;
+        document.getElementById('height-slider').value = dims.altura || 1.0;
+        document.getElementById('depth-slider').value = dims.profundidade || 1.0;
+        
+        updateDisplayValues();
+        console.log(`📦 Dimensões carregadas para mundo ${idMundo}:`, dims);
+      } else {
+        console.log(`⚠️ Mundo ${idMundo} sem configurações, usando padrões`);
+        
+        if (!currentConfig.mundos[configKey]) {
+          currentConfig.mundos[configKey] = {
+            dimensoes: { largura: 1.0, altura: 1.0, profundidade: 1.0 }
+          };
+        }
+        
+        document.getElementById('width-slider').value = 1.0;
+        document.getElementById('height-slider').value = 1.0;
+        document.getElementById('depth-slider').value = 1.0;
+        
+        updateDisplayValues();
+      }
+      
+      updateCollisionBoxesForWorld(idMundo);
+    }
+    
+    // === ATUALIZAÇÃO DE DISPLAYS ===
+    function updateDisplayValues() {
+      if (!selectedWorldId) return;
+      
+      const configKey = `mundo${selectedWorldId}`;
+      const dims = currentConfig.mundos[configKey]?.dimensoes || { largura: 1.0, altura: 1.0, profundidade: 1.0 };
+      
+      document.getElementById('width-value').textContent = dims.largura.toFixed(1);
+      document.getElementById('height-value').textContent = dims.altura.toFixed(1);
+      document.getElementById('depth-value').textContent = dims.profundidade.toFixed(1);
+      document.getElementById('detection-value').textContent = currentConfig.detectionDistance.toFixed(1) + 'm';
+      document.getElementById('scale-value').textContent = currentConfig.globalScale.toFixed(1) + 'x';
+    }
+    
+    // === ATUALIZAÇÃO DE CAIXAS ===
+    function updateCollisionBoxesForWorld(idMundo) {
+      const worldData = detectedWorlds.get(idMundo);
+      if (!worldData) return;
+      
+      const configKey = `mundo${idMundo}`;
+      const dims = currentConfig.mundos[configKey]?.dimensoes || { largura: 1.0, altura: 1.0, profundidade: 1.0 };
+      
+      const clickArea = worldData.clickAreaElement;
+      if (clickArea) {
+        console.log(`🔄 Atualizando caixa_${idMundo} (área clicável):`);
+        console.log(`   - Largura: ${dims.largura}`);
+        console.log(`   - Altura: ${dims.altura}`);
+        console.log(`   - Profundidade: ${dims.profundidade}`);
+        
+        // ✅ ATUALIZA DIMENSÕES
+        clickArea.setAttribute('width', dims.largura);
+        clickArea.setAttribute('height', dims.altura);
+        clickArea.setAttribute('depth', dims.profundidade);
+        
+        // ✅ ATUALIZA VISUAL BASEADO NO MODO DEBUG
+        if (debugMode) {
+          clickArea.setAttribute('material', 'color: #FF0000; opacity: 0.5; transparent: true');
+          console.log(`   🔴 Caixa ${idMundo} VISÍVEL para debug`);
+        } else {
+          clickArea.setAttribute('material', 'opacity: 0; transparent: true');
+          console.log(`   👻 Caixa ${idMundo} INVISÍVEL (mas clicável)`);
+        }
+        
+        // ✅ GARANTE QUE OS EVENTOS ESTÃO ATIVOS
+        clickArea.setAttribute('raycastable', 'true'); // Força raycast para detecção
+        
+        console.log(`✅ caixa_${idMundo} atualizada e pronta para interação`);
+      }
+    }
+    
+    function updateCollisionBoxes() {
+      console.log('🔄 === ATUALIZANDO TODAS AS CAIXAS ===');
+      detectedWorlds.forEach((worldData, idMundo) => {
+        updateCollisionBoxesForWorld(idMundo);
+      });
+      
+      // Atualiza escala global
+      document.querySelectorAll('[gltf-model]').forEach((model) => {
+        const originalScale = parseFloat(model.getAttribute('data-original-scale') || '1.0');
+        const newScale = originalScale * currentConfig.globalScale;
+        model.setAttribute('scale', `${newScale} ${newScale} ${newScale}`);
+      });
+    }
+    
+    // === SALVAMENTO ===
+    async function saveConfigToJSON() {
+      const configData = {
+        dominio: "http://localhost:3000/",
+        ambiente: "development",
+        configuracaoAR: {
+          distanciaDeteccao: currentConfig.detectionDistance,
+          qualidadeCamera: "high",
+          debugMarcadores: debugMode
+        },
+        configuracaoVR: {
+          fov: 80,
+          qualidadeRender: "medium",
+          controlesVR: true,
+          movimentacao: "teleport"
+        },
+        interface: {
+          corPrimaria: currentConfig.primaryColor,
+          corSecundaria: currentConfig.secondaryColor,
+          corFundo: "#f5f5f5",
+          fontePadrao: "Arial, sans-serif",
+          tamanhoFonte: "16px"
+        },
+        debug: {
+          logsAtivos: true,
+          modoDebug: debugMode,
+          estatisticas: false
+        },
+        mundos: currentConfig.mundos,
+        globalScale: currentConfig.globalScale,
+        metadados: {
+          versaoConfig: "2.0.0",
+          ultimaAtualizacao: new Date().toISOString(),
+          autor: "Sistema Zonas 11 - Multi-Mundo"
+        }
+      };
+      
+      try {
+        showStatus('💾 Salvando configuração multi-mundo...', 'info');
+        
+        const response = await fetch('/api/config', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(configData)
+        });
+        
+        const result = await response.json();
+        
+        if (result.success) {
+          console.log('✅ Configuração multi-mundo salva:', result);
+          showStatus('✅ Configuração salva! Sistema atualizado...', 'success');
+          document.getElementById('config-status').innerHTML = `✅ Última atualização: ${new Date().toLocaleString('pt-BR')}`;
+        } else {
+          throw new Error(result.error || 'Erro desconhecido');
+        }
+        
+      } catch (error) {
+        console.error('❌ Erro ao salvar:', error);
+        showStatus('⚠️ Erro ao salvar no servidor', 'error');
+      }
+    }
+    
+    // === CONTROLES DE DEBUG ===
+    function setupDebugControls() {
+      // Seletor de mundo
+      const worldSelector = document.getElementById('world-selector');
+      worldSelector.addEventListener('change', (e) => {
+        selectWorldForEditing(e.target.value);
+      });
+      
+      // Sliders das dimensões
+      const widthSlider = document.getElementById('width-slider');
+      const heightSlider = document.getElementById('height-slider');
+      const depthSlider = document.getElementById('depth-slider');
+      
+      // Sliders globais
+      const detectionSlider = document.getElementById('detection-slider');
+      const scaleSlider = document.getElementById('scale-slider');
+      
+      // Eventos de dimensões (apenas para mundo selecionado)
+      widthSlider.addEventListener('input', (e) => {
+        if (!selectedWorldId) return;
+        const configKey = `mundo${selectedWorldId}`;
+        if (!currentConfig.mundos[configKey]) {
+          currentConfig.mundos[configKey] = { dimensoes: {} };
+        }
+        currentConfig.mundos[configKey].dimensoes.largura = parseFloat(e.target.value);
+        updateDisplayValues();
+        updateCollisionBoxesForWorld(selectedWorldId);
+      });
+      
+      heightSlider.addEventListener('input', (e) => {
+        if (!selectedWorldId) return;
+        const configKey = `mundo${selectedWorldId}`;
+        if (!currentConfig.mundos[configKey]) {
+          currentConfig.mundos[configKey] = { dimensoes: {} };
+        }
+        currentConfig.mundos[configKey].dimensoes.altura = parseFloat(e.target.value);
+        updateDisplayValues();
+        updateCollisionBoxesForWorld(selectedWorldId);
+      });
+      
+      depthSlider.addEventListener('input', (e) => {
+        if (!selectedWorldId) return;
+        const configKey = `mundo${selectedWorldId}`;
+        if (!currentConfig.mundos[configKey]) {
+          currentConfig.mundos[configKey] = { dimensoes: {} };
+        }
+        currentConfig.mundos[configKey].dimensoes.profundidade = parseFloat(e.target.value);
+        updateDisplayValues();
+        updateCollisionBoxesForWorld(selectedWorldId);
+      });
+      
+      // Eventos globais
+      detectionSlider.addEventListener('input', (e) => {
+        currentConfig.detectionDistance = parseFloat(e.target.value);
+        updateDisplayValues();
+      });
+      
+      scaleSlider.addEventListener('input', (e) => {
+        currentConfig.globalScale = parseFloat(e.target.value);
+        updateDisplayValues();
+        updateCollisionBoxes();
+      });
+      
+      // Botões
+      document.getElementById('apply-btn').addEventListener('click', () => {
+        updateCollisionBoxes();
+        showStatus('✅ Configurações aplicadas!', 'success');
+      });
+      
+      document.getElementById('save-btn').addEventListener('click', saveConfigToJSON);
+      
+      document.getElementById('reset-btn').addEventListener('click', () => {
+        if (selectedWorldId) {
+          const configKey = `mundo${selectedWorldId}`;
+          currentConfig.mundos[configKey] = {
+            dimensoes: { largura: 1.0, altura: 1.0, profundidade: 1.0 }
+          };
+          loadWorldDimensions(selectedWorldId);
+          showStatus('🔄 Mundo resetado', 'success');
+        }
+      });
+    }
+    
+    // === SISTEMA DE SINCRONIZAÇÃO AUTOMÁTICA ===
+    function setupWorldSynchronization() {
+      const observer = new MutationObserver((mutations) => {
+        mutations.forEach((mutation) => {
+          if (mutation.type === 'attributes' && mutation.attributeName === 'scale') {
+            const element = mutation.target;
+            const marker = element.closest('[id^="marker-"]');
+            
+            if (marker && element.hasAttribute('gltf-model')) {
+              const worldData = Array.from(detectedWorlds.values()).find(w => 
+                w.element === marker
+              );
+              
+              if (worldData) {
+                const newScale = element.getAttribute('scale');
+                console.log(`🔄 Sincronização: Mundo ${worldData.id} mudou escala para ${newScale}`);
+                updateCollisionBoxProportionally(worldData.id, newScale);
+              }
+            }
+          }
+        });
+      });
+      
+      document.querySelectorAll('[gltf-model]').forEach(model => {
+        observer.observe(model, { attributes: true, attributeFilter: ['scale'] });
+      });
+      
+      console.log('✅ Sistema de sincronização automática ativado');
+    }
+    
+    // === PROPORÇÃO LINEAR ===
+    function updateCollisionBoxProportionally(idMundo, newScaleString) {
+      const worldData = detectedWorlds.get(idMundo);
+      if (!worldData) return;
+      
+      const scaleValues = newScaleString.split(' ').map(parseFloat);
+      const newScale = scaleValues[0] || 1.0;
+      const originalScale = worldData.originalScale;
+      const scaleFactor = newScale / originalScale;
+      
+      const configKey = `mundo${idMundo}`;
+      if (currentConfig.mundos[configKey] && currentConfig.mundos[configKey].dimensoes) {
+        const dims = currentConfig.mundos[configKey].dimensoes;
+        const originalDims = { ...dims };
+        
+        dims.largura = originalDims.largura * scaleFactor;
+        dims.altura = originalDims.altura * scaleFactor;
+        dims.profundidade = originalDims.profundidade * scaleFactor;
+        
+        if (selectedWorldId === idMundo) {
+          document.getElementById('width-slider').value = dims.largura;
+          document.getElementById('height-slider').value = dims.altura;
+          document.getElementById('depth-slider').value = dims.profundidade;
+          updateDisplayValues();
+        }
+        
+        updateCollisionBoxesForWorld(idMundo);
+        
+        console.log(`⚙️ Proporção linear aplicada ao mundo ${idMundo}: fator ${scaleFactor.toFixed(2)}`);
+      }
+    }
+    
+    // === NAVEGAÇÃO ===
+    function navegarParaMundo(urlMundo) {
+      console.log('🌍 Navegando para:', urlMundo);
+      
+      let urlLocal = urlMundo;
+      if (urlMundo.startsWith('http')) {
+        const nomeArquivo = urlMundo.split('/').pop();
+        urlLocal = `../mundos/${nomeArquivo}`;
+        console.log('🔄 URL convertida para local:', urlLocal);
+      }
+      
+      window.location.href = urlLocal;
+    }
+    
+    // === TOGGLE DEBUG MODE ===
+    function toggleDebugMode() {
+      debugMode = !debugMode;
+      console.log(`🔧 Debug Mode: ${debugMode ? 'ATIVO' : 'INATIVO'}`);
+      
+      const debugPanel = document.getElementById('debug-panel');
+      const toggleBtn = document.getElementById('debug-toggle-btn');
+      
+      if (debugMode) {
+        debugPanel.style.display = 'block';
+        debugPanel.classList.add('visible');
+        toggleBtn.style.display = 'flex';
+        toggleBtn.innerHTML = '✅';
+        
+        if (!selectedWorldId && detectedWorlds.size > 0) {
+          const firstWorldId = detectedWorlds.keys().next().value;
+          document.getElementById('world-selector').value = firstWorldId;
+          selectWorldForEditing(firstWorldId);
+        }
+        
+        showStatus('🔧 Painel multi-mundo ativado', 'success');
+      } else {
+        debugPanel.style.display = 'none';
+        debugPanel.classList.remove('visible');
+        toggleBtn.style.display = 'none';
+        toggleBtn.innerHTML = '🔧';
+        
+        showStatus('❌ Painel multi-mundo desativado', 'success');
+      }
+      
+      updateCollisionBoxes();
+    }
+    
+    // === INICIALIZAÇÃO ===
+    document.addEventListener('DOMContentLoaded', () => {
+      const debugToggleBtn = document.getElementById('debug-toggle-btn');
+      debugToggleBtn.addEventListener('click', toggleDebugMode);
+      
+      setupDebugControls();
+    });
+    
+    // === ATALHOS DE TECLADO ===
+    document.addEventListener('keydown', (event) => {
+      if (event.ctrlKey && event.shiftKey && event.code === 'Digit5') {
+        event.preventDefault();
+        toggleDebugMode();
+      }
+      
+      if (event.code === 'Escape' && debugMode) {
+        event.preventDefault();
+        toggleDebugMode();
+      }
+    });
+    
+    // === CARREGAMENTO INICIAL ===
+    document.addEventListener('DOMContentLoaded', async () => {
+      console.log('🚀 === INICIANDO SISTEMA MULTI-MUNDO ===');
+      
+      updateLoadingStatus('Aguardando A-Frame...');
+      
+      // Aguarda A-Frame
+      await new Promise((resolve) => {
+        function checkAFrame() {
+          if (typeof AFRAME !== 'undefined' && 
+              AFRAME.components && 
+              document.querySelector('a-scene')) {
+            const scene = document.querySelector('a-scene');
+            if (scene.hasLoaded) {
+              resolve();
+            } else {
+              scene.addEventListener('loaded', resolve, { once: true });
+            }
+          } else {
+            setTimeout(checkAFrame, 100);
+          }
+        }
+        checkAFrame();
+      });
+      
+      updateLoadingStatus('Carregando configurações multi-mundo...');
+      const configLoaded = await loadConfigFromServerSync();
+      
+      if (configLoaded) {
+        console.log('✅ Configuração multi-mundo carregada!');
+      }
+      
+      updateLoadingStatus('Criando marcadores...');
+      
+      const container = document.querySelector('#markers-container');
+      
+      if (typeof MARCADORES === 'undefined' || !Array.isArray(MARCADORES)) {
+        console.error('❌ Array MARCADORES não encontrado');
+        return;
+      }
+      
+      MARCADORES.forEach((m, index) => {
+        const markerEl = document.createElement('a-marker');
+        markerEl.setAttribute('id', `marker-${index}`);
+        
+        if (['hiro', 'kanji'].includes(m.tipoMarcador)) {
+          markerEl.setAttribute('preset', m.tipoMarcador);
+        } else if (m.tipoMarcador.startsWith('barcode-')) {
+          const value = m.tipoMarcador.split('-')[1];
+          markerEl.setAttribute('type', 'barcode');
+          markerEl.setAttribute('value', value);
+        }
+        
+        const containerEl = document.createElement('a-entity');
+        containerEl.setAttribute('id', `container-${index}`);
+        
+        // ✅ MODELO 3D (SEM EVENTOS DE CLIQUE)
+        const modelEl = document.createElement('a-entity');
+        modelEl.setAttribute('gltf-model', m.modelo3D);
+        modelEl.setAttribute('scale', `${m.escalaModelo} ${m.escalaModelo} ${m.escalaModelo}`);
+        modelEl.setAttribute('data-original-scale', m.escalaModelo);
+        modelEl.setAttribute('id', `model-${index}`);
+        
+        // ✅ CAIXA DE COLISÃO CLICÁVEL (COM TODOS OS EVENTOS)
+        const clickAreaEl = document.createElement('a-box');
+        clickAreaEl.setAttribute('width', 1.0);
+        clickAreaEl.setAttribute('height', 1.0);
+        clickAreaEl.setAttribute('depth', 1.0);
+        clickAreaEl.setAttribute('material', 'opacity: 0; transparent: true');
+        clickAreaEl.setAttribute('class', 'clickable');
+        clickAreaEl.setAttribute('id', `clickarea-${index}`);
+        
+        // ✅ ANIMAÇÃO DE ROTAÇÃO (apenas no modelo)
+        if (m.animacaoRotacao === 'true') {
+          const duracao = 5000 / (parseFloat(m.velocidadeRotacao) || 1.0);
+          modelEl.setAttribute('animation', `property: rotation; to: 0 360 0; loop: true; dur: ${duracao}; easing: linear`);
+        }
+        
+        // ✅ EVENTOS DE INTERAÇÃO NA CAIXA (mouse + touch)
+        
+        // Evento de clique principal (navegação)
+        clickAreaEl.addEventListener('click', () => {
+          console.log(`🔥 Clique na caixa detectado: ${m.nomeMarcador}`);
+          
+          // Feedback visual apenas no modo debug
+          if (debugMode) {
+            clickAreaEl.setAttribute('material', 'color: #00FF00; opacity: 0.8; transparent: true');
+            setTimeout(() => {
+              clickAreaEl.setAttribute('material', 'color: #FF0000; opacity: 0.5; transparent: true');
+            }, 200);
+          }
+          
+          navegarParaMundo(m.urlMundo);
+        });
+        
+        // ✅ EVENTOS DE HOVER (feedback visual em tempo real)
+        clickAreaEl.addEventListener('mouseenter', () => {
+          if (debugMode) {
+            clickAreaEl.setAttribute('material', 'color: #FFFF00; opacity: 0.3; transparent: true');
+          }
+          console.log(`🐆 Hover na caixa: ${m.nomeMarcador}`);
+        });
+        
+        clickAreaEl.addEventListener('mouseleave', () => {
+          if (debugMode) {
+            clickAreaEl.setAttribute('material', 'color: #FF0000; opacity: 0.5; transparent: true');
+          } else {
+            clickAreaEl.setAttribute('material', 'opacity: 0; transparent: true');
+          }
+        });
+        
+        // ✅ EVENTOS TOUCH para dispositivos móveis
+        clickAreaEl.addEventListener('touchstart', (e) => {
+          e.preventDefault(); // Evita comportamentos padrão do touch
+          console.log(`👆 Touch start na caixa: ${m.nomeMarcador}`);
+          
+          if (debugMode) {
+            clickAreaEl.setAttribute('material', 'color: #00FFFF; opacity: 0.7; transparent: true');
+          }
+        });
+        
+        clickAreaEl.addEventListener('touchend', (e) => {
+          e.preventDefault();
+          console.log(`👆 Touch end na caixa: ${m.nomeMarcador}`);
+          
+          // Feedback visual apenas no modo debug
+          if (debugMode) {
+            clickAreaEl.setAttribute('material', 'color: #00FF00; opacity: 0.8; transparent: true');
+            setTimeout(() => {
+              clickAreaEl.setAttribute('material', 'color: #FF0000; opacity: 0.5; transparent: true');
+            }, 200);
+          }
+          
+          // Navegação (mesmo comportamento do clique)
+          navegarParaMundo(m.urlMundo);
+        });
+        
+        containerEl.appendChild(modelEl);
+        containerEl.appendChild(clickAreaEl);
+        markerEl.appendChild(containerEl);
+        container.appendChild(markerEl);
+        
+        console.log(`✅ Marcador ${index + 1} criado com caixa clicável: ${m.nomeMarcador}`);
+      });
+      
+      updateLoadingStatus('Finalizando sistema multi-mundo...');
+      
+      // Detecta mundos após criação
+      setTimeout(() => {
+        detectWorldsInScene();
+        setupWorldSynchronization();
+        
+        const loadingIndicator = document.getElementById('loading-indicator');
+        if (loadingIndicator) {
+          setTimeout(() => {
+            loadingIndicator.classList.add('hidden');
+            console.log('✅ Sistema multi-mundo carregado com sucesso!');
+          }, 500);
+        }
+      }, 300);
+    });
+    
+    console.log('🎮 CONTROLES DISPONÍVEIS:');
+    console.log('   - Ctrl+Shift+5: Ativar painel multi-mundo');
+    console.log('   - ESC: Fechar painel');
+    console.log('   - Selecione mundos no dropdown para editar dimensões');
+  </script>
+</body>
+</html>
