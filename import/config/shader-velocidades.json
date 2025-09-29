@@ -1,0 +1,214 @@
+{
+  "shaderConfigurations": {
+    "mundo1-orb-light": {
+      "velocidade": 0.05000,
+      "descricao": "Velocidade otimizada para Orb Light",
+      "calibradoPor": "testador",
+      "dataCalibagem": "2025-09-28"
+    },
+    "shaderE-shader": {
+      "velocidade": 0.15000,
+      "descricao": "Velocidade ideal para Warping Quilez",
+      "calibradoPor": "testador",
+      "dataCalibagem": "2025-09-28"
+    },
+    "shaderF-shader": {
+      "velocidade": 0.25000,
+      "descricao": "Velocidade balanceada para Multi-camadas",
+      "calibradoPor": "testador",
+      "dataCalibagem": "2025-09-28"
+    },
+    "shaderA-shader": {
+      "velocidade": 0.30000,
+      "descricao": "Velocidade suave para Balatro Paint",
+      "calibradoPor": "testador",
+      "dataCalibagem": "2025-09-28"
+    },
+    "shaderB-shader": {
+      "velocidade": 0.20000,
+      "descricao": "Velocidade controlada para Accretion",
+      "calibradoPor": "testador",
+      "dataCalibagem": "2025-09-28"
+    },
+    "shaderC-shader": {
+      "velocidade": 0.18000,
+      "descricao": "Velocidade natural para Shifting Dunes",
+      "calibradoPor": "testador",
+      "dataCalibagem": "2025-09-28"
+    },
+    "shaderD-shader": {
+      "velocidade": 0.40000,
+      "descricao": "Velocidade padrão",
+      "calibradoPor": "estimativa",
+      "dataCalibagem": "2025-09-28"
+    },
+    "shaderG-shader": {
+      "velocidade": 0.50000,
+      "descricao": "Velocidade moderada para shader simples",
+      "calibradoPor": "estimativa",
+      "dataCalibagem": "2025-09-28"
+    },
+    "shaderH-shader": {
+      "velocidade": 0.45000,
+      "descricao": "Velocidade leve para minimalista",
+      "calibradoPor": "estimativa",
+      "dataCalibagem": "2025-09-28"
+    },
+    "shaderI-shader": {
+      "velocidade": 0.22000,
+      "descricao": "Velocidade de energia controlada",
+      "calibradoPor": "estimativa",
+      "dataCalibagem": "2025-09-28"
+    },
+    "shaderJ-shader": {
+      "velocidade": 0.35000,
+      "descricao": "Velocidade média",
+      "calibradoPor": "estimativa",
+      "dataCalibagem": "2025-09-28"
+    },
+    "shaderK-shader": {
+      "velocidade": 0.28000,
+      "descricao": "Velocidade fractal balanceada",
+      "calibradoPor": "estimativa",
+      "dataCalibagem": "2025-09-28"
+    },
+    "shaderL-shader": {
+      "velocidade": 0.20000,
+      "descricao": "Velocidade para efeito tunnel",
+      "calibradoPor": "estimativa",
+      "dataCalibagem": "2025-09-28"
+    },
+    "shaderM-shader": {
+      "velocidade": 0.35000,
+      "descricao": "Velocidade matemática balanceada",
+      "calibradoPor": "estimativa",
+      "dataCalibagem": "2025-09-28"
+    },
+    "shaderN-shader": {
+      "velocidade": 0.25000,
+      "descricao": "Velocidade orgânica suave",
+      "calibradoPor": "estimativa",
+      "dataCalibagem": "2025-09-28"
+    },
+    "shaderO-shader": {
+      "velocidade": 0.30000,
+      "descricao": "Velocidade abstrata moderada",
+      "calibradoPor": "estimativa",
+      "dataCalibagem": "2025-09-28"
+    },
+    "shaderP-shader": {
+      "velocidade": 0.40000,
+      "descricao": "Velocidade colorida vibrante",
+      "calibradoPor": "estimativa",
+      "dataCalibagem": "2025-09-28"
+    },
+    "shaderQ-shader": {
+      "velocidade": 0.50000,
+      "descricao": "Velocidade limpa e clara",
+      "calibradoPor": "estimativa",
+      "dataCalibagem": "2025-09-28"
+    },
+    "shaderR-shader": {
+      "velocidade": 0.32000,
+      "descricao": "Velocidade rainbow dinâmica",
+      "calibradoPor": "estimativa",
+      "dataCalibagem": "2025-09-28"
+    },
+    "shaderS-shader": {
+      "velocidade": 0.27000,
+      "descricao": "Velocidade elétrica controlada",
+      "calibradoPor": "estimativa",
+      "dataCalibagem": "2025-09-28"
+    },
+    "shaderT-shader": {
+      "velocidade": 0.33000,
+      "descricao": "Velocidade de transformação",
+      "calibradoPor": "estimativa",
+      "dataCalibagem": "2025-09-28"
+    },
+    "shaderU-shader": {
+      "velocidade": 0.24000,
+      "descricao": "Velocidade de fluxo suave",
+      "calibradoPor": "estimativa",
+      "dataCalibagem": "2025-09-28"
+    },
+    "shaderV-shader": {
+      "velocidade": 0.15000,
+      "descricao": "Velocidade 3D complexa controlada",
+      "calibradoPor": "estimativa",
+      "dataCalibagem": "2025-09-28"
+    },
+    "shaderX-shader": {
+      "velocidade": 0.29000,
+      "descricao": "Velocidade complexa balanceada",
+      "calibradoPor": "estimativa",
+      "dataCalibagem": "2025-09-28"
+    },
+    "shaderZ-shader": {
+      "velocidade": 0.18000,
+      "descricao": "Velocidade starfall suave",
+      "calibradoPor": "estimativa",
+      "dataCalibagem": "2025-09-28"
+    },
+    "shader1B-shader": {
+      "velocidade": 0.22000,
+      "descricao": "Velocidade controlada para Protostar 2",
+      "calibradoPor": "estimativa",
+      "dataCalibagem": "2025-09-28"
+    },
+    "shader1C-shader": {
+      "velocidade": 0.18000,
+      "descricao": "Velocidade para flaming experiment",
+      "calibradoPor": "estimativa",
+      "dataCalibagem": "2025-09-28"
+    },
+    "shader1D-shader": {
+      "velocidade": 0.25000,
+      "descricao": "Velocidade balanceada para The Weave",
+      "calibradoPor": "estimativa",
+      "dataCalibagem": "2025-09-28"
+    },
+    "shader1E-shader": {
+      "velocidade": 0.12000,
+      "descricao": "Velocidade suave para Inigo Quilez warping",
+      "calibradoPor": "estimativa",
+      "dataCalibagem": "2025-09-28"
+    },
+    "shader1F-shader": {
+      "velocidade": 0.30000,
+      "descricao": "Velocidade moderada para XorDev compact",
+      "calibradoPor": "estimativa",
+      "dataCalibagem": "2025-09-28"
+    },
+    "shader1G-shader": {
+      "velocidade": 0.20000,
+      "descricao": "Velocidade controlada para lensflare complex",
+      "calibradoPor": "estimativa",
+      "dataCalibagem": "2025-09-28"
+    },
+    "shader1H-shader": {
+      "velocidade": 0.35000,
+      "descricao": "Velocidade dinâmica para Bits blocky",
+      "calibradoPor": "estimativa",
+      "dataCalibagem": "2025-09-28"
+    }
+  },
+  "configuracaoGeral": {
+    "versao": "1.0.0",
+    "precisaoDecimal": 5,
+    "rangeMinimo": 0.00001,
+    "rangeMaximo": 3.00000,
+    "velocidadePadrao": 1.00000,
+    "aplicarAutomaticamente": true,
+    "salvarConfiguracoes": true
+  },
+  "presets": {
+    "ultraLento": 0.01000,
+    "muitoLento": 0.05000,
+    "lento": 0.15000,
+    "normal": 0.50000,
+    "rapido": 1.00000,
+    "muitoRapido": 1.50000,
+    "ultraRapido": 2.00000
+  }
+}
