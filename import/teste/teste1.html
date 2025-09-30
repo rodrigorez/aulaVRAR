@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Teste 1 - Dispositivos Potentes</title>
+    <script src="https://aframe.io/releases/1.7.0/aframe.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r152/three.min.js"></script>
+    <style>
+        #fps {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            background: rgba(0,0,0,0.8);
+            color: white;
+            padding: 10px;
+            font-family: Arial;
+            font-size: 16px;
+            z-index: 1000;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div id="fps">FPS: --</div>
+    
+    <a-scene embedded style="height: 100vh;">
+        <a-entity id="skybox"></a-entity>
+    </a-scene>
+
+    <script>
+        // Shader para dispositivos potentes - Orb completo
+        const fragmentShader = `
+            uniform float time;
+            uniform vec2 resolution;
+            varying vec2 vUv;
+
+            void main() {
+                vec2 uv = vUv;
+                vec2 center = vec2(0.5, 0.5);
+                
+                float t = time * 0.2;
+                
+                // Fundo cósmico complexo
+                vec3 color = vec3(0.0);
+                for(int i = 0; i < 5; i++) {
+                    float fi = float(i);
+                    vec2 offset = vec2(sin(t + fi * 2.0) * 0.1, cos(t + fi * 1.5) * 0.1);
+                    float noise = sin(uv.x * 10.0 + fi + t) * sin(uv.y * 8.0 + fi + t);
+                    color += vec3(0.1, 0.05, 0.2) * noise * 0.3;
+                }
+                
+                // Orb principal
+                vec2 orbPos = center + vec2(sin(t) * 0.1, cos(t * 0.8) * 0.1);
+                float distToOrb = distance(uv, orbPos);
+                
+                // Múltiplas camadas de brilho
+                float orb = smoothstep(0.25, 0.2, distToOrb);
+                orb += 0.3 * smoothstep(0.4, 0.35, distToOrb);
+                orb += 0.1 * smoothstep(0.6, 0.5, distToOrb);
+                
+                vec3 orbColor = vec3(0.8, 0.4, 1.0) * orb;
+                
+                // Efeito de pulsação
+                float pulse = sin(t * 3.0) * 0.3 + 0.7;
+                orbColor *= pulse;
+                
+                color += orbColor;
+                
+                gl_FragColor = vec4(color, 1.0);
+            }
+        `;
+
+        const vertexShader = `
+            varying vec2 vUv;
+            void main() {
+                vUv = uv;
+                gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+            }
+        `;
+
+        // Inicializar Three.js
+        AFRAME.registerComponent('skybox-shader', {
+            init: function() {
+                const geometry = new THREE.SphereGeometry(500, 64, 64);
+                const skyMaterial = new THREE.ShaderMaterial({
+                    vertexShader: vertexShader,
+                    fragmentShader: fragmentShader,
+                    uniforms: {
+                        time: { value: 0 },
+                        resolution: { value: new THREE.Vector2(window.innerWidth, window.innerHeight) }
+                    },
+                    side: THREE.BackSide
+                });
+
+                const skyMesh = new THREE.Mesh(geometry, skyMaterial);
+                this.el.object3D.add(skyMesh);
+                this.skyMaterial = skyMaterial;
+            },
+            
+            tick: function(time) {
+                if (this.skyMaterial) {
+                    this.skyMaterial.uniforms.time.value = performance.now() * 0.001;
+                }
+            }
+        });
+
+        // Adicionar componente ao skybox
+        document.querySelector('#skybox').setAttribute('skybox-shader', '');
+
+        // FPS Counter
+        let lastTime = performance.now();
+        let frameCount = 0;
+        let fps = 0;
+
+        function updateFPS() {
+            frameCount++;
+            const currentTime = performance.now();
+            
+            if (currentTime - lastTime >= 1000) {
+                fps = Math.round((frameCount * 1000) / (currentTime - lastTime));
+                document.getElementById('fps').textContent = `FPS: ${fps}`;
+                frameCount = 0;
+                lastTime = currentTime;
+            }
+            
+            requestAnimationFrame(updateFPS);
+        }
+
+        updateFPS();
+    </script>
+</body>
+</html>
