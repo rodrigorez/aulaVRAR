@@ -268,18 +268,29 @@
             }
         }
 
-        // FPS Counter
+        // FPS Counter limitado a 30 FPS
         let lastTime = performance.now();
         let frameCount = 0;
         let fps = 0;
+        let lastFrameTime = 0;
+        const targetFPS = 30;
+        const frameInterval = 1000 / targetFPS; // ~33.33ms
 
         function updateFPS() {
-            frameCount++;
             const currentTime = performance.now();
+            
+            // Limitar a 30 FPS
+            if (currentTime - lastFrameTime < frameInterval) {
+                requestAnimationFrame(updateFPS);
+                return;
+            }
+            
+            lastFrameTime = currentTime;
+            frameCount++;
             
             if (currentTime - lastTime >= 1000) {
                 fps = Math.round((frameCount * 1000) / (currentTime - lastTime));
-                document.getElementById('fps').textContent = `FPS: ${fps}`;
+                document.getElementById('fps').textContent = `FPS: ${fps} (max 30)`;
                 frameCount = 0;
                 lastTime = currentTime;
             }
