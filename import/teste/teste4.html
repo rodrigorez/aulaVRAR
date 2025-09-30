@@ -46,20 +46,20 @@
     <div id="fps">FPS: --</div>
     <div id="controls">
         <div>Velocidade do Orb:</div>
-        <input type="range" id="velocitySlider" min="0" max="5" step="0.00001" value="0.00000">
-        <div>Valor: <span id="velocityValue">0.00000</span></div>
+        <input type="range" id="velocitySlider" min="0" max="5" step="0.00001" value="5.00000">
+        <div>Valor: <span id="velocityValue">5.00000</span></div>
         
         <hr style="margin: 15px 0; border-color: #555;">
         
         <div>Estabilização:</div>
         <label><input type="checkbox" id="stabilizationEnabled"> Ativar</label><br>
         <div style="margin-top: 10px;">
-            <div>Suavidade: <span id="smoothnessValue">0.95000</span></div>
-            <input type="range" id="smoothnessSlider" min="0.1" max="0.99" step="0.00001" value="0.95000">
+            <div>Suavidade: <span id="smoothnessValue">0.99000</span></div>
+            <input type="range" id="smoothnessSlider" min="0.1" max="0.99" step="0.00001" value="0.99000">
         </div>
         <div style="margin-top: 10px;">
-            <div>Deadzone: <span id="deadzoneValue">0.05000</span></div>
-            <input type="range" id="deadzoneSlider" min="0" max="0.5" step="0.00001" value="0.05000">
+            <div>Deadzone: <span id="deadzoneValue">0.50000</span></div>
+            <input type="range" id="deadzoneSlider" min="0" max="0.5" step="0.00001" value="0.50000">
         </div>
         <div style="margin-top: 10px; font-size: 12px; color: #aaa;">
             α: <span id="alphaValue">--</span><br>
@@ -150,7 +150,7 @@
                     fragmentShader: fragmentShader,
                     uniforms: {
                         time: { value: 0 },
-                        velocity: { value: 0.0 },
+                        velocity: { value: 5.0 },
                         deviceOrientation: { value: new THREE.Vector2(0, 0) },
                         stabilizationStrength: { value: 0.0 },
                         resolution: { value: new THREE.Vector2(window.innerWidth, window.innerHeight) }
@@ -191,8 +191,8 @@
         // Sistema de estabilização híbrido
         let smoothedOrientation = { alpha: 0, beta: 0, gamma: 0 };
         let isStabilizationActive = false;
-        let smoothnessFactor = 0.95;
-        let deadzoneFactor = 0.05;
+        let smoothnessFactor = 0.99;
+        let deadzoneFactor = 0.5;
 
         // Aguardar inicialização do material
         setTimeout(() => {

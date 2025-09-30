@@ -46,8 +46,8 @@
     <div id="fps">FPS: --</div>
     <div id="controls">
         <div>Velocidade do Orb:</div>
-        <input type="range" id="velocitySlider" min="0" max="5" step="0.00001" value="0.10000">
-        <div>Valor: <span id="velocityValue">0.10000</span></div>
+        <input type="range" id="velocitySlider" min="0" max="5" step="0.00001" value="5.00000">
+        <div>Valor: <span id="velocityValue">5.00000</span></div>
     </div>
     
     <a-scene embedded style="height: 100vh;">
@@ -136,7 +136,7 @@
                     fragmentShader: fragmentShader,
                     uniforms: {
                         time: { value: 0 },
-                        velocity: { value: 0.1 },
+                        velocity: { value: 5.0 },
                         resolution: { value: new THREE.Vector2(window.innerWidth, window.innerHeight) }
                     },
                     side: THREE.BackSide
