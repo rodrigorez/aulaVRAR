@@ -18,19 +18,47 @@
             z-index: 1000;
             border-radius: 5px;
         }
+        #controls {
+            position: fixed;
+            top: 10px;
+            left: 10px;
+            background: rgba(0,0,0,0.8);
+            color: white;
+            padding: 15px;
+            font-family: Arial;
+            font-size: 14px;
+            z-index: 1000;
+            border-radius: 5px;
+            width: 250px;
+        }
+        #velocitySlider {
+            width: 100%;
+            margin: 10px 0;
+        }
+        #velocityValue {
+            color: #00ff00;
+            font-weight: bold;
+            font-family: monospace;
+        }
     </style>
 </head>
 <body>
     <div id="fps">FPS: --</div>
+    <div id="controls">
+        <div>Velocidade do Orb:</div>
+        <input type="range" id="velocitySlider" min="0" max="1" step="0.00001" value="0.00000">
+        <div>Valor: <span id="velocityValue">0.00000</span></div>
+    </div>
     
     <a-scene embedded style="height: 100vh;">
         <a-entity id="skybox"></a-entity>
     </a-scene>
 
     <script>
-        // Shader para dispositivos muito fracos - Orb estático
+        // Shader para dispositivos muito fracos - Orb com velocidade controlável
         const fragmentShader = `
             uniform float time;
+            uniform float velocity;
             uniform vec2 resolution;
             varying vec2 vUv;
 
@@ -38,14 +66,16 @@
                 vec2 uv = vUv;
                 vec2 center = vec2(0.5, 0.5);
                 
-                // SEM movimento - totalmente estático
+                float t = time * velocity;
+                
                 // Fundo fixo
                 vec3 color = vec3(0.02, 0.01, 0.05);
                 
-                // Orb estático no centro
-                float distToOrb = distance(uv, center);
+                // Orb com movimento controlável
+                vec2 orbPos = center + vec2(sin(t) * 0.05, cos(t * 0.4) * 0.05);
+                float distToOrb = distance(uv, orbPos);
                 
-                // Orb simples sem movimento
+                // Orb simples
                 float orb = smoothstep(0.35, 0.25, distToOrb);
                 
                 vec3 orbColor = vec3(0.5, 0.1, 0.7) * orb;
@@ -73,6 +103,7 @@
                     fragmentShader: fragmentShader,
                     uniforms: {
                         time: { value: 0 },
+                        velocity: { value: 0.0 },
                         resolution: { value: new THREE.Vector2(window.innerWidth, window.innerHeight) }
                     },
                     side: THREE.BackSide
@@ -84,15 +115,34 @@
             },
             
             tick: function(time) {
-                // NÃO atualiza tempo - shader estático
-                // if (this.skyMaterial) {
-                //     this.skyMaterial.uniforms.time.value = performance.now() * 0.001;
-                // }
+                if (this.skyMaterial) {
+                    this.skyMaterial.uniforms.time.value = performance.now() * 0.001;
+                }
             }
         });
 
         // Adicionar componente ao skybox
-        document.querySelector('#skybox').setAttribute('skybox-shader', '');
+        const skyboxEl = document.querySelector('#skybox');
+        skyboxEl.setAttribute('skybox-shader', '');
+
+        // Controles de velocidade
+        const velocitySlider = document.getElementById('velocitySlider');
+        const velocityValue = document.getElementById('velocityValue');
+        let skyMaterial = null;
+
+        // Aguardar inicialização do material
+        setTimeout(() => {
+            skyMaterial = skyboxEl.components['skybox-shader'].skyMaterial;
+        }, 100);
+
+        velocitySlider.addEventListener('input', function() {
+            const velocity = parseFloat(this.value);
+            velocityValue.textContent = velocity.toFixed(5);
+            
+            if (skyMaterial) {
+                skyMaterial.uniforms.velocity.value = velocity;
+            }
+        });
 
         // FPS Counter
         let lastTime = performance.now();
