@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-  <title>Galeria 1 - Zonas 11 [28/09/2025, 20:31:09]</title>
+  <title>Galeria 1 - Zonas 11 [01/10/2025, 07:56:29]</title>
   <script src="https://aframe.io/releases/1.7.0/aframe.min.js"></script>
   <script src="https://cdn.jsdelivr.net/gh/AR-js-org/AR.js@3.4.0/aframe/build/aframe-ar-nft.js"></script>
   <style> 
@@ -28,6 +28,8 @@
       font-size: 13px;
       z-index: 9999;
       display: none;
+      visibility: hidden; /* ✅ OCULTO POR PADRÃO */
+      opacity: 0; /* ✅ OCULTO POR PADRÃO */
       min-width: 320px;
       max-width: 400px;
       /* ✅ SCROLLING RESPONSÍVO */
@@ -225,7 +227,13 @@
       font-weight: 600;
       z-index: 10000;
       opacity: 0;
+      visibility: hidden; /* ✅ OCULTO POR PADRÃO */
       transition: opacity 0.3s ease;
+    }
+    
+    /* Quando interface está ativa */
+    body.interface-active .status-indicator {
+      visibility: visible !important;
     }
     
     .status-indicator.show {
@@ -245,12 +253,17 @@
       height: 100%;
       background: linear-gradient(135deg, #2196F3 0%, #FF5722 100%);
       color: white;
-      display: flex;
+      display: none; /* ✅ OCULTO POR PADRÃO - só aparece quando interface ativa */
       flex-direction: column;
       align-items: center;
       justify-content: center;
       z-index: 99999;
       font-family: 'Segoe UI', Arial, sans-serif;
+    }
+    
+    /* Quando interface está ativa */
+    body.interface-active #loading-indicator {
+      display: flex !important;
     }
     
     #loading-indicator.hidden {
@@ -284,6 +297,17 @@
       text-align: center;
       max-width: 300px;
     }
+    /* ✅ SISTEMA DE OCULTAÇÃO TOTAL - Interface escondida por padrão */
+    .interface-hidden #debug-toggle-btn,
+    .interface-hidden #debug-panel,
+    .interface-hidden #status-indicator,
+    .interface-hidden #loading-indicator {
+      display: none !important;
+      visibility: hidden !important;
+      opacity: 0 !important;
+      pointer-events: none !important;
+    }
+    
     #debug-toggle-btn {
       position: fixed;
       top: 20px;
@@ -295,7 +319,7 @@
       border-radius: 50%;
       cursor: pointer;
       z-index: 10001;
-      display: flex;
+      display: none; /* ✅ OCULTO POR PADRÃO */
       align-items: center;
       justify-content: center;
       color: white;
@@ -305,6 +329,11 @@
       transition: all 0.3s ease;
       backdrop-filter: blur(10px);
       border: 2px solid rgba(255,255,255,0.2);
+    }
+    
+    /* Quando interface está ativa */
+    body.interface-active #debug-toggle-btn {
+      display: flex !important;
     }
     
     #debug-toggle-btn:hover {
@@ -471,7 +500,7 @@
       corFundo: '#f5f5f5',
       corPrimaria: '#FF5722',
       corSecundaria: '#2196F3',
-      debugModoDebug: 'true' === 'true',
+      debugModoDebug: '' === 'true',
       debugLogsAtivos: 'true' === 'true',
       arTamanhoMarcador: parseFloat('0.6'),
       arDistanciaDeteccao: parseFloat('2')
@@ -563,7 +592,69 @@ function navegarParaMundo(url) {
 }
     // === FIM DO PAINEL DE CONTROLE ===
 
-    // ✅ SISTEMA DE DEBUG VISUAL AVANÇADO (Tempo Real)
+    // ✅ SISTEMA DE OCULTAÇÃO TOTAL E ATIVAÇÃO POR ATALHO
+    let interfaceAtiva = false;
+    let sequenciaAtivacao = [];
+    const SEQUENCIA_CORRETA = ['Control', 'Shift', 'F12', 'Control']; // Ctrl+Shift+F12+Ctrl
+    
+    function ativarInterface() {
+      if (interfaceAtiva) return;
+      
+      console.log('✅ === ATIVANDO INTERFACE DEBUG ===');
+      interfaceAtiva = true;
+      
+      // Remove classe de ocultação e adiciona classe ativa
+      document.body.classList.remove('interface-hidden');
+      document.body.classList.add('interface-active');
+      
+      // Mostra indicador de carregamento
+      const loadingIndicator = document.getElementById('loading-indicator');
+      if (loadingIndicator) {
+        loadingIndicator.style.display = 'flex';
+      }
+      
+      // Inicia processo de carregamento normal
+      iniciarCarregamentoCompleto();
+      
+      console.log('✅ Interface ativada com sucesso!');
+    }
+    
+    function verificarSequenciaAtivacao(event) {
+      // Adiciona a tecla pressionada à sequência
+      sequenciaAtivacao.push(event.code);
+      
+      // Mantém apenas os últimos 4 elementos
+      if (sequenciaAtivacao.length > SEQUENCIA_CORRETA.length) {
+        sequenciaAtivacao.shift();
+      }
+      
+      // Verifica se a sequência está correta
+      const sequenciaCorreta = sequenciaAtivacao.length === SEQUENCIA_CORRETA.length &&
+        sequenciaAtivacao.every((key, index) => {
+          if (SEQUENCIA_CORRETA[index] === 'Control') {
+            return key === 'ControlLeft' || key === 'ControlRight';
+          }
+          if (SEQUENCIA_CORRETA[index] === 'Shift') {
+            return key === 'ShiftLeft' || key === 'ShiftRight';
+          }
+          return key === SEQUENCIA_CORRETA[index];
+        });
+      
+      if (sequenciaCorreta && !interfaceAtiva) {
+        event.preventDefault();
+        ativarInterface();
+        sequenciaAtivacao = []; // Limpa sequência
+      }
+      
+      // Reset sequência após timeout
+      setTimeout(() => {
+        if (sequenciaAtivacao.length > 0) {
+          sequenciaAtivacao = [];
+        }
+      }, 2000);
+    }
+    
+    // Variável de controle de debug (só ativa quando interface estiver ativa)
     let debugMode = false;
     
     // ✅ CONFIGURAÇÃO INICIAL PADRÃO (será sobrescrita pelo JSON)
@@ -929,20 +1020,29 @@ function navegarParaMundo(url) {
       });
     }
     
-    // ✅ EVENTOS: Botão permanente + Atalhos de teclado
+    // ✅ EVENTOS: Sistema de ativação por atalho especial
     document.addEventListener('DOMContentLoaded', () => {
-      // Botão permanente para toggle debug
+      // Inicia com interface oculta
+      document.body.classList.add('interface-hidden');
+      console.log('✅ Interface iniciada em modo oculto. Use Ctrl+Shift+F12+Ctrl para ativar.');
+      
+      // Botão permanente para toggle debug (só funciona quando interface ativa)
       const debugToggleBtn = document.getElementById('debug-toggle-btn');
       debugToggleBtn.addEventListener('click', () => {
+        if (!interfaceAtiva) return;
         console.log('🔧 Botão de debug clicado!');
         toggleDebugMode();
       });
-      
-      console.log('✅ Botão de debug permanente configurado!');
     });
     
-    // ✅ ATALHO DE TECLADO: Ctrl+Shift+5 e ESC (ainda funcionam)
+    // ✅ ATALHO DE ATIVAÇÃO: Ctrl+Shift+F12+Ctrl (desktop only)
+    document.addEventListener('keydown', verificarSequenciaAtivacao);
+    
+    // ✅ ATALHOS PARA QUANDO INTERFACE ESTÁ ATIVA
     document.addEventListener('keydown', (event) => {
+      if (!interfaceAtiva) return; // Só funciona se interface estiver ativa
+      
+      // Ctrl+Shift+5 para toggle debug
       if (event.ctrlKey && event.shiftKey && event.code === 'Digit5') {
         event.preventDefault();
         toggleDebugMode();
@@ -961,8 +1061,8 @@ function navegarParaMundo(url) {
     // ✅ LOG DE INSTRUÇÃO (apenas uma vez)
     console.log('🎮 DEBUG AVANÇADO: Pressione Ctrl+Shift+5 para mostrar/ocultar painel de configuração');
 
-    // ✅ CARREGAMENTO INICIAL - EXECUTA IMEDIATAMENTE
-    document.addEventListener('DOMContentLoaded', async () => {
+    // ✅ FUNÇÃO DE CARREGAMENTO COMPLETO (separada para ativação tardia)
+    async function iniciarCarregamentoCompleto() {
       console.log('🚀 === INICIANDO CARREGAMENTO DA PÁGINA ===');
       
       // ✅ STEP 1: AGUARDA A-FRAME ESTAR COMPLETAMENTE PRONTO
@@ -1208,6 +1308,14 @@ function navegarParaMundo(url) {
       }
       
       console.log('🎉 Página totalmente carregada e funcionando!');
+    }
+    
+    // ✅ INICIALIZAÇÃO APENAS DOS CONTROLES (quando DOM carregar)
+    document.addEventListener('DOMContentLoaded', () => {
+      // Inicializa controles de debug para quando interface for ativada
+      setupDebugControls();
+      
+      console.log('✅ Controles inicializados. Interface oculta até ativação.');
     });
   </script>
 </body>
