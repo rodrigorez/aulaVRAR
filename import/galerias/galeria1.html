@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-  <title>Galeria 1 - Zonas 11 [01/10/2025, 07:56:29]</title>
+  <title>Galeria 1 - Zonas 11 [01/10/2025, 08:05:04] - Marcadores AR Otimizados</title>
   <script src="https://aframe.io/releases/1.7.0/aframe.min.js"></script>
   <script src="https://cdn.jsdelivr.net/gh/AR-js-org/AR.js@3.4.0/aframe/build/aframe-ar-nft.js"></script>
   <style> 
@@ -1067,6 +1067,110 @@ function navegarParaMundo(url) {
       
       // ✅ STEP 1: AGUARDA A-FRAME ESTAR COMPLETAMENTE PRONTO
       console.log('🔧 STEP 1: Aguardando A-Frame carregar...');
+      if (interfaceAtiva) {
+        updateLoadingStatus('Carregando bibliotecas AR/VR...');
+      }
+      
+      // Função para aguardar A-Frame estar completamente carregado
+      function waitForAFrameComplete() {
+        return new Promise((resolve) => {
+          // Verifica se A-Frame e suas dependências estão carregadas
+          function checkAFrame() {
+            if (typeof AFRAME !== 'undefined' && 
+                AFRAME.components && 
+                AFRAME.components['gltf-model'] &&
+                AFRAME.components.material &&
+                document.querySelector('a-scene')) {
+              
+              const scene = document.querySelector('a-scene');
+              
+              // Se a cena já está carregada
+              if (scene.hasLoaded) {
+                console.log('✅ A-Frame completamente carregado!');
+                resolve();
+                return;
+              }
+              
+              // Senão, aguarda o evento 'loaded'
+              scene.addEventListener('loaded', () => {
+                console.log('✅ A-Frame scene loaded!');
+                // Aguarda mais um pouco para garantir estabilidade
+                setTimeout(resolve, 200);
+              }, { once: true });
+              
+            } else {
+              console.log('⏳ Aguardando A-Frame dependencies...');
+              setTimeout(checkAFrame, 100);
+            }
+          }
+          
+          checkAFrame();
+        });
+      }
+      
+      await waitForAFrameComplete();
+      
+      // ✅ STEP 2: CARREGA CONFIGURAÇÃO DO JSON (SÍNCRONO)
+      console.log('📡 STEP 2: Carregando configuração do JSON...');
+      if (interfaceAtiva) {
+        updateLoadingStatus('Carregando configurações personalizadas...');
+      }
+      const configLoaded = await loadConfigFromServerSync();
+      
+      if (configLoaded) {
+        console.log('✅ Configuração carregada com sucesso do JSON!');
+      } else {
+        console.log('⚠️ Usando configuração padrão');
+      }
+      
+      // ✅ STEP 3: ATUALIZA INTERFACE COM VALORES CARREGADOS (se ativa)
+      if (interfaceAtiva) {
+        console.log('🎯 STEP 3: Atualizando interface com valores...');
+        updateLoadingStatus('Configurando interface de usuário...');
+        updateDisplayValues();
+        
+        // Atualiza sliders se existirem
+        const widthSlider = document.getElementById('width-slider');
+        const heightSlider = document.getElementById('height-slider');
+        const depthSlider = document.getElementById('depth-slider');
+        
+        if (widthSlider) widthSlider.value = currentConfig.boxWidth;
+        if (heightSlider) heightSlider.value = currentConfig.boxHeight;
+        if (depthSlider) depthSlider.value = currentConfig.boxDepth;
+      }
+      
+      // ✅ STEP 4: CRIA MARCADORES SEMPRE (independente da interface)
+      console.log('🌿 STEP 4: Criando marcadores AR...');
+      if (interfaceAtiva) {
+        updateLoadingStatus('Criando elementos 3D...');
+      }
+      
+      criarMarcadoresAR();
+      
+      // ✅ STEP 5: FINALIZA CARREGAMENTO
+      console.log('✅ === CARREGAMENTO CONCLUÍDO ===');
+      if (interfaceAtiva) {
+        updateLoadingStatus('Finalizando...');
+        
+        // Esconde indicador de carregamento
+        const loadingIndicator = document.getElementById('loading-indicator');
+        if (loadingIndicator) {
+          setTimeout(() => {
+            loadingIndicator.classList.add('hidden');
+            console.log('✅ Indicador de carregamento removido');
+          }, 500); // Pequeno delay para suavizar a transição
+        }
+      }
+      
+      console.log('🎉 Página totalmente carregada e funcionando!');
+    }
+    
+    // ✅ FUNÇÃO SEPARADA PARA CRIAR MARCADORES AR
+    function criarMarcadoresAR() {
+      console.log('🚀 === INICIANDO CARREGAMENTO DA PÁGINA ===');
+      
+      // ✅ STEP 1: AGUARDA A-FRAME ESTAR COMPLETAMENTE PRONTO
+      console.log('🔧 STEP 1: Aguardando A-Frame carregar...');
       updateLoadingStatus('Carregando bibliotecas AR/VR...');
       
       // Função para aguardar A-Frame estar completamente carregado
@@ -1133,10 +1237,33 @@ function navegarParaMundo(url) {
       if (heightSlider) heightSlider.value = currentConfig.boxHeight;
       if (depthSlider) depthSlider.value = currentConfig.boxDepth;
       
-      // ✅ STEP 4: CRIA MARCADORES COM VALORES CORRETOS
-      console.log('🌿 STEP 4: Criando marcadores com valores do JSON...');
-      updateLoadingStatus('Criando elementos 3D...');
+      console.log('🌿 STEP 4: Criando marcadores AR...');
+      if (interfaceAtiva) {
+        updateLoadingStatus('Criando elementos 3D...');
+      }
       
+      criarMarcadoresAR();
+      
+      // ✅ STEP 5: FINALIZA CARREGAMENTO
+      console.log('✅ CARREGAMENTO CONCLUÍDO');
+      if (interfaceAtiva) {
+        updateLoadingStatus('Finalizando...');
+        
+        // Esconde indicador de carregamento
+        const loadingIndicator = document.getElementById('loading-indicator');
+        if (loadingIndicator) {
+          setTimeout(() => {
+            loadingIndicator.classList.add('hidden');
+            console.log('✅ Indicador de carregamento removido');
+          }, 500);
+        }
+      }
+      
+      console.log('🎉 Página totalmente carregada e funcionando!');
+    }
+    
+    // ✅ FUNÇÃO SEPARADA PARA CRIAR MARCADORES AR
+    function criarMarcadoresAR() {
       const container = document.querySelector('#markers-container');
 
       if (typeof MARCADORES === 'undefined' || !Array.isArray(MARCADORES)) {
@@ -1150,13 +1277,16 @@ function navegarParaMundo(url) {
         
         // Define o tipo de marcador
         if (['hiro', 'kanji'].includes(m.tipoMarcador)) {
+            console.log(`🎯 Criando marcador ${m.tipoMarcador} para ${m.nomeMarcador}`);
             markerEl.setAttribute('preset', m.tipoMarcador);
         } else if (m.tipoMarcador.startsWith('barcode-')) {
             const value = m.tipoMarcador.split('-')[1];
+            console.log(`📱 Criando marcador barcode ${value} para ${m.nomeMarcador}`);
             markerEl.setAttribute('type', 'barcode');
             markerEl.setAttribute('value', value);
         } else {
             console.warn(`⚠️ Tipo de marcador desconhecido: ${m.tipoMarcador}`);
+            return; // Pula este marcador
         }
 
         // ✅ CONTAINER PRINCIPAL para agrupamento
@@ -1167,7 +1297,7 @@ function navegarParaMundo(url) {
         const modelEl = document.createElement('a-entity');
         modelEl.setAttribute('gltf-model', m.modelo3D);
         modelEl.setAttribute('scale', `${m.escalaModelo} ${m.escalaModelo} ${m.escalaModelo}`);
-        modelEl.setAttribute('data-original-scale', m.escalaModelo); // Para sistema de escala dinâmica
+        modelEl.setAttribute('data-original-scale', m.escalaModelo);
         modelEl.setAttribute('id', `model-${index}`);
         
         // ✅ ÁREA DE CLIQUE INVISÍVEL (geometria dinâmica para detecção)
@@ -1185,12 +1315,6 @@ function navegarParaMundo(url) {
         clickAreaEl.setAttribute('class', 'clickable');
         clickAreaEl.setAttribute('id', `clickarea-${index}`);
         
-        // ✅ VERIFICAÇÃO FINAL após setAttribute
-        console.log(`✅ Caixa ${index + 1} criada com:`);
-        console.log(`   - width final: ${clickAreaEl.getAttribute('width')}`);
-        console.log(`   - height final: ${clickAreaEl.getAttribute('height')}`);
-        console.log(`   - depth final: ${clickAreaEl.getAttribute('depth')}`);
-        
         // ✅ FEEDBACK VISUAL (anel SEMPRE VISÍVEL - opacidade fixa 80%)
         const feedbackEl = document.createElement('a-ring');
         feedbackEl.setAttribute('radius-inner', '0.6');
@@ -1199,7 +1323,7 @@ function navegarParaMundo(url) {
         feedbackEl.setAttribute('material', `color: ${m.corTema || '#00FF00'}; opacity: 0.8`);
         feedbackEl.setAttribute('id', `feedback-${index}`);
         
-        // ✅ TEXTO INDICATIVO (sempre visível - maior e mais simples)
+        // ✅ TEXTO INDICATIVO (sempre visível)
         const textEl = document.createElement('a-text');
         textEl.setAttribute('value', 'CLIQUE AQUI');
         textEl.setAttribute('position', '0 1.5 0');
@@ -1207,10 +1331,6 @@ function navegarParaMundo(url) {
         textEl.setAttribute('color', '#FFFFFF');
         textEl.setAttribute('scale', '3 3 3');
         textEl.setAttribute('id', `text-${index}`);
-        
-        console.log(`🎯 Criando elementos visuais para marcador ${index + 1}:`);
-        console.log(`   - Anel: ${m.corTema} com 80% opacidade`);
-        console.log(`   - Texto: CLIQUE AQUI (branco, escala 3x)`);
         
         // ✅ ANIMAÇÃO DE ROTAÇÃO se ativada
         if (m.animacaoRotacao === 'true') {
@@ -1243,15 +1363,53 @@ function navegarParaMundo(url) {
         markerEl.appendChild(containerEl);
         container.appendChild(markerEl);
         
-        console.log(`✅ Marcador ${index + 1} (${m.nomeMarcador}) - ELEMENTOS CRIADOS:`);
+        console.log(`✅ Marcador ${index + 1} (${m.nomeMarcador}) criado e adicionado à cena`);
+        console.log(`   - Tipo: ${m.tipoMarcador}`);
+        console.log(`   - Modelo: ${m.modelo3D}`);
         console.log(`   - Container ID: container-${index}`);
-        console.log(`   - Modelo ID: model-${index}`);
-        console.log(`   - Clique ID: clickarea-${index}`);
-        console.log(`   - Feedback ID: feedback-${index}`);
-        console.log(`   - Texto ID: text-${index}`);
-        console.log(`   - Cor do tema: ${m.corTema}`);
-        console.log(`➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖➖`);
       });
+      
+      console.log(`✅ Todos os ${MARCADORES.length} marcadores AR foram criados!`);
+    }
+    
+    // ✅ INICIALIZAÇÃO AUTOMÁTICA DOS MARCADORES AR (independente da interface)
+    document.addEventListener('DOMContentLoaded', async () => {
+      console.log('🚀 === INICIALIZAÇÃO AUTOMÁTICA DOS MARCADORES AR ===');
+      
+      // Aguarda A-Frame estar pronto
+      function waitForAFrameComplete() {
+        return new Promise((resolve) => {
+          function checkAFrame() {
+            if (typeof AFRAME !== 'undefined' && 
+                AFRAME.components && 
+                document.querySelector('a-scene')) {
+              const scene = document.querySelector('a-scene');
+              if (scene.hasLoaded) {
+                resolve();
+              } else {
+                scene.addEventListener('loaded', resolve, { once: true });
+              }
+            } else {
+              setTimeout(checkAFrame, 100);
+            }
+          }
+          checkAFrame();
+        });
+      }
+      
+      await waitForAFrameComplete();
+      
+      // Carrega configuração
+      const configLoaded = await loadConfigFromServerSync();
+      if (configLoaded) {
+        console.log('✅ Configuração carregada para AR!');
+      }
+      
+      // Cria marcadores AR imediatamente
+      criarMarcadoresAR();
+      
+      console.log('✅ Marcadores AR prontos para detecção!');
+    });
       
       // ✅ FORÇA APLICAÇÃO IMEDIATA DOS VALORES - GARANTIA ABSOLUTA
       console.log('🚑 === FORÇANDO APLICAÇÃO IMEDIATA DOS VALORES ===');
@@ -1316,7 +1474,40 @@ function navegarParaMundo(url) {
       setupDebugControls();
       
       console.log('✅ Controles inicializados. Interface oculta até ativação.');
+      
+      // ✅ INICIALIZA MARCADORES AR AUTOMATICAMENTE
+      console.log('🚀 Iniciando carregamento automático dos marcadores AR...');
+      
+      // Aguarda A-Frame
+      function initMarkersWhenReady() {
+        if (typeof AFRAME !== 'undefined' && document.querySelector('a-scene')) {
+          const scene = document.querySelector('a-scene');
+          
+          const processMarkers = () => {
+            // Carrega configuração se possível (modo síncrono simples)
+            loadConfigFromServerSync().then(() => {
+              console.log('🌿 Criando marcadores AR...');
+              criarMarcadoresAR();
+              console.log('✅ Marcadores AR prontos!');
+            }).catch(() => {
+              console.log('⚠️ Usando configuração padrão para AR');
+              criarMarcadoresAR();
+            });
+          };
+          
+          if (scene.hasLoaded) {
+            processMarkers();
+          } else {
+            scene.addEventListener('loaded', processMarkers, { once: true });
+          }
+        } else {
+          setTimeout(initMarkersWhenReady, 100);
+        }
+      }
+      
+      initMarkersWhenReady();
     });
+
   </script>
 </body>
 </html>
